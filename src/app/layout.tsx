@@ -33,7 +33,7 @@ export default async function Layout({
             <AppSidebar />
             <SidebarInset>
               <Header />
-              <main>{children}</main>
+              <main className="px-10">{children}</main>
             </SidebarInset>
           </SidebarProvider>
         </ThemeProvider>

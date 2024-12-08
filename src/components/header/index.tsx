@@ -16,7 +16,7 @@ import NotificationPopover from "./notification";
 
 const Header = () => {
   return (
-    <main>
+    <main className="border-b ">
       <div className="flex items-center justify-between">
         {/* Sidebar toggle and Search */}
         <div className="flex items-center">
