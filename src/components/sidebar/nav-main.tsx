@@ -35,16 +35,20 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarGroupLabel className="text-xs  mt-2">Platform</SidebarGroupLabel>
+      <SidebarMenu className="px-2">
         {items.map((item) => {
           if (item.isSimple) {
             return (
-              <SidebarMenuButton key={item.title} tooltip={item.title}>
+              <SidebarMenuButton
+                key={item.title}
+                tooltip={item.title}
+                className="my-1"
+              >
                 <Link
                   href={item.url}
                   className={`flex gap-2 items-center ${
-                    pathname === item.url ? "text-blue-500 font-bold" : ""
+                    pathname === item.url ? "text-blue-600 font-bold " : ""
                   }`}
                 >
                   {item.icon && <item.icon className="h-4 w-4" />}
@@ -58,8 +62,8 @@ export function NavMain({
             <Collapsible key={item.title} asChild className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon className="h-4 w-4" />}
+                  <SidebarMenuButton tooltip={item.title} className="my-1">
+                    {item.icon && <item.icon className="h-4 w-4 " />}
                     <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
@@ -67,7 +71,7 @@ export function NavMain({
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
+                      <SidebarMenuSubItem key={subItem.title} className="my-1">
                         <SidebarMenuSubButton asChild>
                           <Link
                             href={subItem.url}

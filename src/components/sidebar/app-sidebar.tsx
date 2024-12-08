@@ -8,7 +8,7 @@ import {
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
+  ShoppingBag,
   Package,
 } from "lucide-react";
 
@@ -53,20 +53,24 @@ const data = {
       isSimple: true,
     },
     {
-      title: "Playground",
+      title: "Products",
       url: "#",
-      icon: SquareTerminal,
+      icon: ShoppingBag,
       items: [
         {
-          title: "History",
+          title: "Liquor",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Snacks",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "Non-Alcoholic Beverages",
+          url: "#",
+        },
+        {
+          title: "Tobacco Products",
           url: "#",
         },
       ],
