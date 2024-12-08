@@ -12,7 +12,7 @@ export type InventoryItem = {
   quantity: number;
   pricePerUnit: number;
   supplier: string;
-  status: "in-stock" | "low-stock" | "out-of-stock";
+  status: "In Stock" | "Low Stock" | "Out of Stock" | "Discontinued ";
   lastUpdated: string;
 };
 
@@ -40,6 +40,11 @@ export const columns: ColumnDef<InventoryItem>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "id",
+    header: "ID",
+  },
+
+  {
     accessorKey: "name",
     header: ({ column }) => {
       return (
@@ -52,14 +57,32 @@ export const columns: ColumnDef<InventoryItem>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const name = row.getValue("name");
+      return <div className="ml-4">{name}</div>;
+    },
   },
   {
     accessorKey: "category",
     header: "Category",
+    cell: ({ row }) => {
+      const category = row.getValue("category");
+      return (
+        <span className=" bg-gray-300 py-1 px-2 rounded-md">{category}</span>
+      );
+    },
   },
   {
     accessorKey: "quantity",
     header: "Quantity",
+    cell: ({ row }) => {
+      const quantity = row.getValue("quantity");
+      return (
+        <span className=" bg-gray-300 py-1 px-2 rounded-md ml-2">
+          {quantity}
+        </span>
+      );
+    },
   },
   {
     accessorKey: "pricePerUnit",
@@ -70,7 +93,18 @@ export const columns: ColumnDef<InventoryItem>[] = [
         style: "currency",
         currency: "NPR",
       }).format(pricePerUnit);
-      return <div className="font-medium">{formatted}</div>;
+
+      // Split the formatted value into currency symbol and number
+      const [currencySymbol, ...numberParts] =
+        formatted.split(/(\d+(?:\.\d+)?)/);
+      const numberValue = numberParts.join("");
+
+      return (
+        <div className="font-medium">
+          <span className="text-gray-500">{currencySymbol}</span>
+          <span className="font-semibold">&nbsp;{numberValue}</span>
+        </div>
+      );
     },
   },
 
