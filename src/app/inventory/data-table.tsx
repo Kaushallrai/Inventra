@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="space-y-4 p-4 bg-white shadow-sm rounded-lg">
+    <div className="space-y-4 py-4 bg-white shadow-sm rounded-lg">
       <div className="flex items-center justify-between">
         <Input
           placeholder="Filter names..."
