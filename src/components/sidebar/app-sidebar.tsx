@@ -9,6 +9,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  Package,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -48,7 +49,7 @@ const data = {
     {
       title: "Inventory",
       url: "/inventory",
-      icon: LayoutDashboard,
+      icon: Package,
       isSimple: true,
     },
     {
