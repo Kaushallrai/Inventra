@@ -1,4 +1,4 @@
-import { ChevronRight, LayoutDashboard, type LucideIcon } from "lucide-react";
+import { ChevronRight, type LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   Collapsible,
@@ -24,7 +24,7 @@ export function NavMain({
     title: string;
     url: string;
     icon?: LucideIcon;
-    isActive?: boolean;
+    isSimple?: boolean;
     items?: {
       title: string;
       url: string;
@@ -37,59 +37,57 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
-        {/* Dashboard Button with Active State */}
-        <SidebarMenuButton tooltip="Dashboard">
-          <Link
-            href="/dashboard"
-            className={`flex gap-2 ${
-              pathname === "/dashboard" ? "text-blue-500 font-bold" : ""
-            }`}
-          >
-            <LayoutDashboard className="h-4 w-4" />
-            <span>Dashboard</span>
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenu>
-      <SidebarMenu>
-        {/* Loop over menu items */}
-        {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
+        {items.map((item) => {
+          if (item.isSimple) {
+            return (
+              <SidebarMenuButton key={item.title} tooltip={item.title}>
+                <Link
+                  href={item.url}
+                  className={`flex gap-2 items-center ${
+                    pathname === item.url ? "text-blue-500 font-bold" : ""
+                  }`}
+                >
+                  {item.icon && <item.icon className="h-4 w-4" />}
                   <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <Link
-                          href={subItem.url}
-                          className={`${
-                            pathname === subItem.url
-                              ? "text-blue-500 font-bold" // Active state for sub-items
-                              : ""
-                          }`}
-                        >
-                          <span>{subItem.title}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
+                </Link>
+              </SidebarMenuButton>
+            );
+          }
+
+          return (
+            <Collapsible key={item.title} asChild className="group/collapsible">
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton tooltip={item.title}>
+                    {item.icon && <item.icon className="h-4 w-4" />}
+                    <span>{item.title}</span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    {item.items?.map((subItem) => (
+                      <SidebarMenuSubItem key={subItem.title}>
+                        <SidebarMenuSubButton asChild>
+                          <Link
+                            href={subItem.url}
+                            className={`${
+                              pathname === subItem.url
+                                ? "text-blue-500 font-bold"
+                                : ""
+                            }`}
+                          >
+                            <span>{subItem.title}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          );
+        })}
       </SidebarMenu>
     </SidebarGroup>
   );

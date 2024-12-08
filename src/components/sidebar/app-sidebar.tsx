@@ -4,6 +4,7 @@ import {
   Bot,
   Frame,
   GalleryVerticalEnd,
+  LayoutDashboard,
   Map,
   PieChart,
   Settings2,
@@ -39,10 +40,21 @@ const data = {
 
   navMain: [
     {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+      isSimple: true,
+    },
+    {
+      title: "Inventory",
+      url: "/inventory",
+      icon: LayoutDashboard,
+      isSimple: true,
+    },
+    {
       title: "Playground",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
       items: [
         {
           title: "History",
