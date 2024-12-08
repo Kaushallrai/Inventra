@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ModeToggle } from "./mode-toggle";
-import { BellIcon } from "lucide-react";
+import NotificationPopover from "./notification";
 
 const Header = () => {
   return (
@@ -25,10 +25,7 @@ const Header = () => {
         </div>
         {/* Notification, Dark-mode toggle and Profile */}
         <div className="flex items-center space-x-4 mr-4">
-          <Button variant="ghost" size="icon">
-            <BellIcon className="h-9 w-9" />
-            <span className="sr-only">Notifications</span>
-          </Button>
+          <NotificationPopover />
           <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
