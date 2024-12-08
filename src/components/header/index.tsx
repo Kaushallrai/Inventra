@@ -23,8 +23,8 @@ const Header = () => {
           <SidebarTrigger />
           <SearchBar />
         </div>
-        {/* Notification, Dark-mode toggle and Profile */}
-        <div className="flex items-center space-x-4 mr-4">
+        {/* Notification, Dark-mode toggle and Profile (Hidden on small screens) */}
+        <div className="hidden md:flex items-center space-x-4 mr-4">
           <NotificationPopover />
           <ModeToggle />
           <DropdownMenu>

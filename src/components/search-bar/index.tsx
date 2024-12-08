@@ -17,7 +17,7 @@ export function SearchBar() {
   return (
     <form
       onSubmit={handleSearch}
-      className="flex w-full max-w-md items-center space-x-2 my-4"
+      className="flex w-full items-center space-x-2 my-4"
     >
       <div className="relative flex-grow">
         <Input
@@ -25,7 +25,7 @@ export function SearchBar() {
           placeholder="Search..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-6 rounded-full border border-primary"
+          className="pl-6 rounded-full border border-primary w-full max-w-full sm:max-w-[600px] min-w-[400px]"
         />
       </div>
       <Button
