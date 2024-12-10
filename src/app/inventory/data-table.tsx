@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="space-y-4 py-4 bg-white shadow-sm rounded-lg">
+    <div className="space-y-4 py-4 rounded-lg">
       <div className="flex items-center justify-between">
         <Input
           placeholder="Filter names..."
@@ -138,11 +138,11 @@ export function DataTable<TData, TValue>({
 
       <div className="border rounded-md overflow-hidden">
         <Table>
-          <TableHeader className="bg-gray-50">
+          <TableHeader className="">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className=" text-gray-500 py-1">
+                  <TableHead key={header.id} className=" text-gray-400 py-1">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -160,7 +160,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-gray-50 transition-colors"
+                  className=""
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="py-3">

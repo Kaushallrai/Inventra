@@ -10,6 +10,7 @@ import {
   Settings2,
   ShoppingBag,
   Package,
+  ShoppingCart,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -78,12 +79,12 @@ const data = {
     {
       title: "Sales",
       url: "/sales",
-      icon: Package,
+      icon: ShoppingCart,
       isSimple: true,
     },
     {
-      title: "Sales",
-      url: "/sales",
+      title: "Purchase",
+      url: "/purchase",
       icon: Package,
       isSimple: true,
     },

@@ -68,7 +68,9 @@ export const columns: ColumnDef<InventoryItem>[] = [
     cell: ({ row }) => {
       const category = row.getValue("category");
       return (
-        <span className=" bg-gray-300 py-1 px-2 rounded-md">{category}</span>
+        <span className=" bg-gray-300 py-1 px-2 rounded-md text-black">
+          {category}
+        </span>
       );
     },
   },
@@ -78,7 +80,7 @@ export const columns: ColumnDef<InventoryItem>[] = [
     cell: ({ row }) => {
       const quantity = row.getValue("quantity");
       return (
-        <span className=" bg-gray-300 py-1 px-2 rounded-md ml-2">
+        <span className=" bg-gray-300 py-1 px-2 rounded-md ml-2 text-black">
           {quantity}
         </span>
       );
