@@ -76,6 +76,18 @@ const data = {
       ],
     },
     {
+      title: "Sales",
+      url: "/sales",
+      icon: Package,
+      isSimple: true,
+    },
+    {
+      title: "Sales",
+      url: "/sales",
+      icon: Package,
+      isSimple: true,
+    },
+    {
       title: "Models",
       url: "#",
       icon: Bot,
