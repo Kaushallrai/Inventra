@@ -53,7 +53,7 @@ export default function SignIn() {
             Welcome Back
           </CardTitle>
           <CardTitle className="text-sm text-center font-medium text-gray-400">
-            Enter your email below to login to your account
+            Enter your email and password below to login to your account
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -99,13 +99,12 @@ export default function SignIn() {
 
               <LoadingButton pending={form.formState.isSubmitting} />
             </form>
-            <div className="flex items-center justify-center mt-4 gap-1">
-              <span className="text-sm">Don&apos;t have an account?</span>
+            <div className="flex items-center justify-center mt-4">
               <Link
-                href="/signup"
-                className="text-sm text-blue-600 hover:underline"
+                href="/forgot-password"
+                className="text-sm text-gray-600 hover:underline"
               >
-                Sign up
+                Forgot Password?
               </Link>
             </div>
           </Form>

@@ -16,29 +16,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       },
       async authorize(credentials) {
-        let user = null;
-
-        // validate credentials
         const parsedCredentials = signInSchema.safeParse(credentials);
         if (!parsedCredentials.success) {
           console.error("Invalid credentials:", parsedCredentials.error.errors);
           return null;
         }
-        // get user
 
-        user = {
+        const { email, password } = parsedCredentials.data;
+
+        const user = {
           id: "1",
           name: "Aditya Singh",
           email: "jojo@jojo.com",
+          password: "password123", // Add a password for validation
           role: "admin",
         };
 
-        if (!user) {
-          console.log("Invalid credentials");
+        if (email !== user.email || password !== user.password) {
+          console.log("Invalid credentials provided");
           return null;
         }
-
-        return user;
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        };
       },
     }),
   ],
