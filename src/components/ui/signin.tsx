@@ -46,70 +46,76 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex items-center justify-center w-full p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-center text-gray-800">
-            Welcome Back
-          </CardTitle>
-          <CardTitle className="text-sm text-center font-medium text-gray-400">
-            Enter your email and password below to login to your account
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {globalError && <ErrorMessage error={globalError} />}
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter your email address"
-                        autoComplete="off"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <LoadingButton pending={form.formState.isSubmitting} />
-            </form>
-            <div className="flex items-center justify-center mt-4">
-              <Link
-                href="/forgot-password"
-                className="text-sm text-gray-600 hover:underline"
+    <div className="flex items-center  w-full p-4 justify-center">
+      <div className="flex text-card-foreground shadow-md  border rounded-xl overflow-hidden">
+        <Card className=" hidden md:flex bg-gray-500 w-[400px] "></Card>
+        <Card className="w-[400px] max-w-md">
+          <CardHeader className="my-6">
+            <CardTitle className="text-2xl font-semibold text-center text-gray-800">
+              Welcome Back
+            </CardTitle>
+            <CardTitle className="text-sm text-center font-medium text-gray-400">
+              Enter your email and password below to login to your account
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {globalError && <ErrorMessage error={globalError} />}
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-5 "
               >
-                Forgot Password?
-              </Link>
-            </div>
-          </Form>
-        </CardContent>
-      </Card>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Enter your email address"
+                          autoComplete="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Enter password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <LoadingButton pending={form.formState.isSubmitting} />
+              </form>
+              <div className="flex items-center justify-center mt-4 mb-6">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-gray-600 hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

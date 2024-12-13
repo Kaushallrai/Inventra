@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import {
   BookOpen,
   Bot,
@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Package,
   ShoppingCart,
+  PlusSquare,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -25,6 +26,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useGetCategoriesQuery } from "@/redux/apiSlice";
+import { useState } from "react";
 
 // Define a type for Category
 interface Category {
@@ -33,23 +36,21 @@ interface Category {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { data: categories = [], isLoading, error } = useGetCategoriesQuery({});
+  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
 
-  // Fetch categories from API
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch("/api/categories");
-        if (!response.ok) throw new Error("Failed to fetch categories");
-        const data: Category[] = await response.json(); // Type the response
-        setCategories(data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-    fetchCategories();
-  }, []);
+  if (error) {
+    console.error("Failed to load categories", error);
+    return <div>Error loading categories</div>;
+  }
+
+  const handleAddCategoryClick = () => {
+    setShowAddCategoryModal(true);
+  };
 
   const data = {
     user: {
@@ -81,10 +82,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Products",
         url: "#",
         icon: ShoppingBag,
-        items: categories.map((category) => ({
-          title: category.name,
-          url: `/category/${category.id}`,
-        })),
+        items: [
+          ...categories.map((category: Category) => ({
+            title: category.name,
+            url: `/category/${category.id}`,
+          })),
+          {
+            title: "Add Category",
+            url: "#",
+            icon: PlusSquare,
+            className: "font-semibold cursor-pointer",
+            onClick: handleAddCategoryClick,
+          },
+        ],
       },
       {
         title: "Sales",

@@ -28,14 +28,17 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
+      icon?: LucideIcon;
+      onClick?: () => void;
+      className?: string;
     }[];
   }[];
 }) {
-  const pathname = usePathname(); // Get the current pathname
+  const pathname = usePathname();
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="text-xs  mt-2">Platform</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-xs  mt-2 ">Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           if (item.isSimple) {
@@ -72,17 +75,36 @@ export function NavMain({
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title} className="my-1">
-                        <SidebarMenuSubButton asChild>
-                          <Link
-                            href={subItem.url}
-                            className={`${
-                              pathname === subItem.url
-                                ? "text-blue-500 font-bold"
-                                : ""
-                            }`}
-                          >
-                            <span>{subItem.title}</span>
-                          </Link>
+                        <SidebarMenuSubButton asChild onClick={subItem.onClick}>
+                          {subItem.onClick ? (
+                            <div
+                              onClick={subItem.onClick}
+                              className={`flex gap-2 items-center ${
+                                pathname === subItem.url
+                                  ? "text-blue-500 font-bold"
+                                  : ""
+                              } ${subItem.className || ""}`}
+                            >
+                              {subItem.icon && (
+                                <subItem.icon className="h-4 w-4" />
+                              )}
+                              <span>{subItem.title}</span>
+                            </div>
+                          ) : (
+                            <Link
+                              href={subItem.url}
+                              className={`flex gap-2 items-center ${
+                                pathname === subItem.url
+                                  ? "text-blue-500 font-bold"
+                                  : ""
+                              } ${subItem.className || ""}`}
+                            >
+                              {subItem.icon && (
+                                <subItem.icon className="h-4 w-4" />
+                              )}
+                              <span>{subItem.title}</span>
+                            </Link>
+                          )}
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
