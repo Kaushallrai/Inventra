@@ -1,6 +1,11 @@
 // src/redux/apiSlice.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
@@ -79,7 +84,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
-    deleteCategory: builder.mutation({
+    deleteCategory: builder.mutation<Category, { id: number; name: string }>({
       query: (id) => ({
         url: `/categories/${id}`,
         method: "DELETE",
@@ -87,10 +92,10 @@ export const apiSlice = createApi({
       invalidatesTags: ["Category"],
     }),
     updateCategory: builder.mutation({
-      query: ({ id, ...category }) => ({
+      query: ({ id, name }) => ({
         url: `/categories/${id}`,
         method: "PUT",
-        body: category,
+        body: { name },
       }),
       invalidatesTags: ["Category"],
     }),

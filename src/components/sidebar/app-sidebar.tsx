@@ -13,6 +13,7 @@ import {
   Package,
   ShoppingCart,
   PlusSquare,
+  Pencil,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -29,6 +30,7 @@ import {
 import { useGetCategoriesQuery } from "@/redux/apiSlice";
 import { useState } from "react";
 import { AddCategoryModal } from "../modal/AddCategoryModal";
+import { EditCategoryModal } from "../modal/EditCategoryModal";
 
 interface Category {
   id: number;
@@ -38,6 +40,7 @@ interface Category {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: categories = [], isLoading, error } = useGetCategoriesQuery({});
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -50,6 +53,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const handleAddCategoryClick = () => {
     setShowAddCategoryModal(true);
+  };
+  const handleEditCategoryClick = () => {
+    setIsEditModalOpen(true);
   };
 
   const data = {
@@ -93,6 +99,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             icon: PlusSquare,
             className: "font-semibold cursor-pointer",
             onClick: handleAddCategoryClick,
+          },
+          {
+            title: "Edit Category",
+            url: "#",
+            icon: Pencil,
+            className: "font-semibold cursor-pointer",
+            onClick: handleEditCategoryClick,
           },
         ],
       },
@@ -211,6 +224,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <AddCategoryModal
         isOpen={showAddCategoryModal}
         onClose={() => setShowAddCategoryModal(false)}
+      />
+      <EditCategoryModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
       />
     </>
   );
