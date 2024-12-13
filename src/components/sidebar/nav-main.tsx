@@ -36,7 +36,7 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="text-xs  mt-2">Platform</SidebarGroupLabel>
-      <SidebarMenu className="px-2">
+      <SidebarMenu>
         {items.map((item) => {
           if (item.isSimple) {
             return (

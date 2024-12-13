@@ -26,9 +26,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const user = {
           id: "1",
-          name: "Aditya Singh",
-          email: "jojo@jojo.com",
-          password: "password123", // Add a password for validation
+          name: "Kaushal Rai",
+          email: "kaushal@gmail.com",
+          password: "kaushalrai", // Add a password for validation
           role: "admin",
         };
 
