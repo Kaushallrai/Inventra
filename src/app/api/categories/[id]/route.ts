@@ -8,7 +8,7 @@ export async function PUT(
   try {
     const body = await req.json();
     const { name } = body;
-    const id = await Number(params.id);
+    const id = Number(params.id);
 
     if (!id || !name) {
       return NextResponse.json(
@@ -36,7 +36,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = Number(await params.id);
+    const id = Number(params.id);
 
     if (!id) {
       return NextResponse.json({ message: "ID is required" }, { status: 400 });
