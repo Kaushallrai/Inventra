@@ -1,6 +1,15 @@
 // src/redux/apiSlice.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface Category {
   id: number;
   name: string;
@@ -14,11 +23,14 @@ export const apiSlice = createApi({
   tagTypes: ["User", "Transaction", "Category", "Product", "Brand", "Variant"],
   endpoints: (builder) => ({
     // User endpoints
-    getUsers: builder.query({
+    getUsers: builder.query<User[], void>({
       query: () => "/users",
       providesTags: ["User"],
     }),
-    addUser: builder.mutation({
+    addUser: builder.mutation<
+      User,
+      Omit<User, "id" | "createdAt" | "updatedAt"> & { password: string }
+    >({
       query: (user) => ({
         url: "/users",
         method: "POST",
@@ -26,14 +38,14 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    deleteUser: builder.mutation({
+    deleteUser: builder.mutation<void, number>({
       query: (id) => ({
         url: `/users/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["User"],
     }),
-    updateUser: builder.mutation({
+    updateUser: builder.mutation<User, Partial<User> & { id: number }>({
       query: ({ id, ...user }) => ({
         url: `/users/${id}`,
         method: "PUT",

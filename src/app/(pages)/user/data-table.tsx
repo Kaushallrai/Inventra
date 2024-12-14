@@ -36,11 +36,13 @@ import { ChevronLeft, ChevronRight, PlusSquare } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onAddUser: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onAddUser,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -85,8 +87,11 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <div className="flex gap-2 ">
-          <Button className="bg-blue-600 hover:bg-blue-500 text-white">
-            <PlusSquare />
+          <Button
+            className="bg-blue-600 hover:bg-blue-500 text-white"
+            onClick={onAddUser}
+          >
+            <PlusSquare className="mr-2 h-4 w-4" />
             Add User
           </Button>
           <DropdownMenu>

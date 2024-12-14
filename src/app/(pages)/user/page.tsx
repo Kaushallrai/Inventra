@@ -1,4 +1,6 @@
-import { User, columns } from "./columns";
+"use client";
+import { AddUserModal } from "@/components/modal/AddUserModal";
+import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import {
   Breadcrumb,
@@ -7,49 +9,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useState } from "react";
+import { useGetUsersQuery } from "@/redux/apiSlice";
 
-async function getData(): Promise<User[]> {
-  return [
-    {
-      id: "1",
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Admin",
-      lastLogin: "2024-12-12T10:00:00Z",
-    },
-    {
-      id: "2",
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "User",
-      lastLogin: "2023-12-01T14:30:00Z",
-    },
-    {
-      id: "3",
-      name: "Robert Brown",
-      email: "robert.brown@example.com",
-      role: "Moderator",
-      lastLogin: "2024-12-05T09:15:00Z",
-    },
-    {
-      id: "4",
-      name: "Emily Johnson",
-      email: "emily.johnson@example.com",
-      role: "User",
-      lastLogin: "2024-12-10T16:45:00Z",
-    },
-    {
-      id: "5",
-      name: "Michael Wong",
-      email: "michael.wong@example.com",
-      role: "Admin",
-      lastLogin: "2023-11-15T11:20:00Z",
-    },
-  ];
-}
-
-export default async function UsersPage() {
-  const data = await getData();
+export default function UsersPage() {
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const { data: users = [], isLoading, error } = useGetUsersQuery();
 
   return (
     <div className="container mx-auto mt-4 px-4">
@@ -67,7 +32,11 @@ export default async function UsersPage() {
           </Breadcrumb>
         </div>
       </div>
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} data={users} />
+      <AddUserModal
+        isOpen={isAddUserModalOpen}
+        onClose={() => setIsAddUserModalOpen(false)}
+      />
     </div>
   );
 }

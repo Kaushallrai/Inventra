@@ -1,0 +1,3 @@
+
+ALTER TABLE "User" DROP COLUMN "status",
+ADD COLUMN     "role" TEXT NOT NULL DEFAULT 'User';
