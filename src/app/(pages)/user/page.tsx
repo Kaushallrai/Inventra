@@ -16,6 +16,10 @@ export default function UsersPage() {
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const { data: users = [], isLoading, error } = useGetUsersQuery();
 
+  const handleAddUser = () => {
+    setIsAddUserModalOpen(true);
+  };
+
   return (
     <div className="container mx-auto mt-4 px-4">
       <div className="mb-4">
@@ -32,7 +36,7 @@ export default function UsersPage() {
           </Breadcrumb>
         </div>
       </div>
-      <DataTable columns={columns} data={users} />
+      <DataTable columns={columns} data={users} onAddUser={handleAddUser} />
       <AddUserModal
         isOpen={isAddUserModalOpen}
         onClose={() => setIsAddUserModalOpen(false)}

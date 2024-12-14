@@ -25,13 +25,19 @@ import { useAddUserMutation } from "@/redux/apiSlice";
 import { toast } from "sonner";
 import { BaseModal } from ".";
 
-const formSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  email: z.string().email({ message: "Invalid email address" }),
-  role: z.enum(["Admin", "User", "Moderator"], {
-    required_error: "Please select a role",
-  }),
-});
+// Improved form schema with password validation
+const formSchema = z
+  .object({
+    name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    role: z.enum(["Admin", "User", "Moderator"], {
+      required_error: "Please select a role",
+    }),
+  })
+  .strict(); // Prevents additional fields
 
 interface AddUserModalProps {
   isOpen: boolean;
@@ -46,24 +52,32 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
     defaultValues: {
       name: "",
       email: "",
+      password: "",
       role: undefined,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await addUser({
+      const trimmedValues = {
         name: values.name.trim(),
         email: values.email.trim(),
+        password: values.password.trim(),
         role: values.role,
         lastLogin: new Date().toISOString(),
-      }).unwrap();
-      form.reset();
+      };
+
+      const response = await addUser(trimmedValues).unwrap();
+
       toast.success("User added successfully");
+      form.reset();
       onClose();
+
+      return response; // Optional: return the response if needed
     } catch (error) {
       console.error("Failed to add user:", error);
       toast.error("Failed to add user");
+      throw error; // Re-throw to allow further error handling if needed
     }
   }
 
@@ -75,7 +89,11 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
       description="Enter the details for the new user"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-5"
+          noValidate // Prevents browser's native form validation
+        >
           <FormField
             control={form.control}
             name="name"
@@ -104,7 +122,25 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                     type="email"
                     placeholder="Enter user's email"
                     {...field}
-                    autoComplete="off"
+                    autoComplete="new-email"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Enter user's password"
+                    {...field}
+                    autoComplete="new-password"
                   />
                 </FormControl>
                 <FormMessage />
@@ -137,7 +173,12 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
             )}
           />
           <div className="flex justify-end space-x-2 mt-5">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isLoading}
+            >
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
