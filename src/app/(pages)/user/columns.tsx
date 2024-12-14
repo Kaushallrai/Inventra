@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export interface User {
@@ -115,6 +115,32 @@ export const columns: ColumnDef<User>[] = [
         }
       );
       return <span>{lastLogin}</span>;
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => console.log("Edit user", row.original)}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => console.log("Delete user", row.original)}
+          >
+            <Trash2 className="h-4 w-4 mr-1" />
+            Delete
+          </Button>
+        </div>
+      );
     },
   },
 ];
