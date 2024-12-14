@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  BookOpen,
-  Bot,
   Frame,
   GalleryVerticalEnd,
   LayoutDashboard,
@@ -14,6 +12,8 @@ import {
   ShoppingCart,
   PlusSquare,
   Pencil,
+  Truck,
+  Users,
 } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -122,46 +122,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         isSimple: true,
       },
       {
-        title: "Models",
+        title: "Supplier",
         url: "#",
-        icon: Bot,
-        items: [
-          {
-            title: "Genesis",
-            url: "#",
-          },
-          {
-            title: "Explorer",
-            url: "#",
-          },
-          {
-            title: "Quantum",
-            url: "#",
-          },
-        ],
+        icon: Truck,
       },
       {
-        title: "Documentation",
+        title: "Users",
         url: "#",
-        icon: BookOpen,
-        items: [
-          {
-            title: "Introduction",
-            url: "#",
-          },
-          {
-            title: "Get Started",
-            url: "#",
-          },
-          {
-            title: "Tutorials",
-            url: "#",
-          },
-          {
-            title: "Changelog",
-            url: "#",
-          },
-        ],
+        icon: Users,
+        isSimple: true,
       },
       {
         title: "Settings",
