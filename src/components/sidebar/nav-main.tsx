@@ -41,19 +41,26 @@ export function NavMain({
       <SidebarGroupLabel className="text-xs mt-2">Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
+          const baseItemClasses =
+            "flex items-center w-full px-3 py-2 gap-3 hover:bg-gray-100 rounded";
+          const activeClasses = "text-blue-600 font-bold bg-gray-200";
+
           if (item.isSimple) {
             return (
               <SidebarMenuButton
                 key={item.title}
                 tooltip={item.title}
-                className={`my-1 ${pathname === item.url ? "bg-gray-200" : ""}`}
+                className="my-1"
+                asChild
               >
                 <Link
                   href={item.url}
-                  className="flex gap-2 items-center w-full h-full"
+                  className={`${baseItemClasses} ${
+                    pathname === item.url ? activeClasses : ""
+                  }`}
                 >
-                  {item.icon && <item.icon className="h-4 w-4" />}
-                  <span>{item.title}</span>
+                  {item.icon && <item.icon className="h-4 w-4 shrink-0" />}
+                  <span className="truncate">{item.title}</span>
                 </Link>
               </SidebarMenuButton>
             );
@@ -65,14 +72,13 @@ export function NavMain({
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
                     tooltip={item.title}
-                    className={`my-1 ${
-                      pathname === item.url ? "bg-gray-100" : ""
-                    }`}
+                    className="my-1 w-full"
+                    asChild
                   >
-                    <div className="flex items-center w-full gap-2">
-                      {item.icon && <item.icon className="h-4 w-4" />}
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    <div className={`${baseItemClasses}`}>
+                      {item.icon && <item.icon className="h-4 w-4 shrink-0" />}
+                      <span className="flex-grow truncate">{item.title}</span>
+                      <ChevronRight className="h-4 w-4 ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </div>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -80,34 +86,30 @@ export function NavMain({
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title} className="my-1">
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton asChild onClick={subItem.onClick}>
                           {subItem.onClick ? (
                             <div
                               onClick={subItem.onClick}
-                              className={`flex gap-2 items-center w-full ${
-                                pathname === subItem.url
-                                  ? "text-blue-500 font-bold"
-                                  : ""
-                              } ${subItem.className || ""}`}
+                              className={`${baseItemClasses} ${
+                                pathname === subItem.url ? activeClasses : ""
+                              } ${subItem.className || ""} cursor-pointer`}
                             >
                               {subItem.icon && (
-                                <subItem.icon className="h-4 w-4" />
+                                <subItem.icon className="h-4 w-4 shrink-0" />
                               )}
-                              <span>{subItem.title}</span>
+                              <span className="truncate">{subItem.title}</span>
                             </div>
                           ) : (
                             <Link
                               href={subItem.url}
-                              className={`flex gap-2 items-center w-full ${
-                                pathname === subItem.url
-                                  ? "text-blue-500 font-bold"
-                                  : ""
+                              className={`${baseItemClasses} ${
+                                pathname === subItem.url ? activeClasses : ""
                               } ${subItem.className || ""}`}
                             >
                               {subItem.icon && (
-                                <subItem.icon className="h-4 w-4" />
+                                <subItem.icon className="h-4 w-4 shrink-0" />
                               )}
-                              <span>{subItem.title}</span>
+                              <span className="truncate">{subItem.title}</span>
                             </Link>
                           )}
                         </SidebarMenuSubButton>
