@@ -38,7 +38,7 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="text-xs  mt-2 ">Platform</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-xs mt-2">Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
           if (item.isSimple) {
@@ -46,13 +46,11 @@ export function NavMain({
               <SidebarMenuButton
                 key={item.title}
                 tooltip={item.title}
-                className="my-1"
+                className={`my-1 ${pathname === item.url ? "bg-gray-200" : ""}`}
               >
                 <Link
                   href={item.url}
-                  className={`flex gap-2 items-center ${
-                    pathname === item.url ? "text-blue-600 font-bold " : ""
-                  }`}
+                  className="flex gap-2 items-center w-full h-full"
                 >
                   {item.icon && <item.icon className="h-4 w-4" />}
                   <span>{item.title}</span>
@@ -65,21 +63,28 @@ export function NavMain({
             <Collapsible key={item.title} asChild className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title} className="my-1">
-                    {item.icon && <item.icon className="h-4 w-4 " />}
-                    <span>{item.title}</span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    className={`my-1 ${
+                      pathname === item.url ? "bg-blue-100" : ""
+                    }`}
+                  >
+                    <div className="flex items-center w-full gap-2">
+                      {item.icon && <item.icon className="h-4 w-4" />}
+                      <span>{item.title}</span>
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    </div>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title} className="my-1">
-                        <SidebarMenuSubButton asChild onClick={subItem.onClick}>
+                        <SidebarMenuSubButton asChild>
                           {subItem.onClick ? (
                             <div
                               onClick={subItem.onClick}
-                              className={`flex gap-2 items-center ${
+                              className={`flex gap-2 items-center w-full ${
                                 pathname === subItem.url
                                   ? "text-blue-500 font-bold"
                                   : ""
@@ -93,7 +98,7 @@ export function NavMain({
                           ) : (
                             <Link
                               href={subItem.url}
-                              className={`flex gap-2 items-center ${
+                              className={`flex gap-2 items-center w-full ${
                                 pathname === subItem.url
                                   ? "text-blue-500 font-bold"
                                   : ""
