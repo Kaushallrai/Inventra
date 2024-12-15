@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -22,55 +22,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  useUpdateUserMutation,
-  useVerifyPasswordMutation,
-} from "@/redux/apiSlice";
+import { useUpdateUserMutation } from "@/redux/apiSlice";
 import { BaseModal } from ".";
 import { toast } from "sonner";
 
-const formSchema = z
-  .object({
-    name: z.string().min(1, {
-      message: "Name must be at least 1 character.",
-    }),
-    email: z.string().email({
-      message: "Please enter a valid email address.",
-    }),
-    role: z.enum(["Admin", "User", "Moderator"], {
-      required_error: "Please select a role.",
-    }),
-    currentPassword: z.string().optional(),
-    newPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .optional(),
-    confirmPassword: z.string().optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.currentPassword || data.newPassword || data.confirmPassword) {
-        return data.currentPassword && data.newPassword && data.confirmPassword;
-      }
-      return true;
-    },
-    {
-      message: "All password fields must be filled to change password",
-      path: ["currentPassword"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.newPassword && data.confirmPassword) {
-        return data.newPassword === data.confirmPassword;
-      }
-      return true;
-    },
-    {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    }
-  );
+const formSchema = z.object({
+  name: z.string().min(1, {
+    message: "Name must be at least 1 character.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  role: z.enum(["Admin", "User", "Moderator"], {
+    required_error: "Please select a role.",
+  }),
+});
 
 interface User {
   id: string;
@@ -87,66 +53,34 @@ interface EditUserModalProps {
 
 export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
   const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
-  const [verifyPassword] = useVerifyPasswordMutation();
-  const [isPasswordVerified, setIsPasswordVerified] = useState(false);
-
-  const defaultValues = useMemo(
-    () => ({
-      name: user?.name || "",
-      email: user?.email || "",
-      role: user?.role || "User",
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    }),
-    [user]
-  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: {
+      name: "",
+      email: "",
+      role: "User",
+    },
   });
 
   useEffect(() => {
-    if (isOpen && user) {
-      form.reset(defaultValues);
-      setIsPasswordVerified(false);
+    if (user && isOpen) {
+      form.reset({
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      });
     }
-  }, [isOpen, user, form.reset, defaultValues]);
+  }, [user, isOpen]); // Remove 'form' from the dependency array
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!user) return;
 
     try {
-      const updateData: any = {
+      const result = await updateUser({
         id: user.id,
-        name: values.name,
-        email: values.email,
-        role: values.role,
-      };
-
-      if (
-        values.currentPassword &&
-        values.newPassword &&
-        values.confirmPassword
-      ) {
-        if (!isPasswordVerified) {
-          const verificationResult = await verifyPassword({
-            userId: user.id,
-            password: values.currentPassword,
-          }).unwrap();
-
-          if (!verificationResult.isValid) {
-            toast.error("Current password is incorrect");
-            return;
-          }
-          setIsPasswordVerified(true);
-        }
-
-        updateData.newPassword = values.newPassword;
-      }
-
-      const result = await updateUser(updateData).unwrap();
+        ...values,
+      }).unwrap();
       console.log("Update result:", result);
       toast.success("User updated successfully");
       onClose();
@@ -223,57 +157,6 @@ export function EditUserModal({ isOpen, onClose, user }: EditUserModalProps) {
                     <SelectItem value="Moderator">Moderator</SelectItem>
                   </SelectContent>
                 </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="currentPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter current password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="newPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>New Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter new password"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm New Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Confirm new password"
-                    {...field}
-                  />
-                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

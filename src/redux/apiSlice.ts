@@ -6,6 +6,8 @@ interface User {
   name: string;
   email: string;
   status: string;
+  role: string;
+  password: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -52,16 +54,6 @@ export const apiSlice = createApi({
         body: user,
       }),
       invalidatesTags: ["User"],
-    }),
-    verifyPassword: builder.mutation<
-      { isValid: boolean },
-      { id: string; password: string }
-    >({
-      query: ({ id, password }) => ({
-        url: `users/${id}/`,
-        method: "POST",
-        body: { password },
-      }),
     }),
 
     // Transaction endpoints
@@ -216,7 +208,6 @@ export const {
   useAddUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
-  useVerifyPasswordMutation,
   useGetTransactionsQuery,
   useAddTransactionMutation,
   useDeleteTransactionMutation,

@@ -128,7 +128,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         title: "Users",
-        url: "#",
+        url: "/user",
         icon: Users,
         isSimple: true,
       },
