@@ -11,13 +11,23 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useState } from "react";
 import { useGetUsersQuery } from "@/redux/apiSlice";
+import { EditUserModal } from "@/components/modal/EditUserModal";
 
-export default function UsersPage() {
+export default function Users() {
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
-  const { data: users = [], isLoading, error } = useGetUsersQuery();
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+
+  const { data: users = [] } = useGetUsersQuery();
 
   const handleAddUser = () => {
+    setEditingUser(null);
     setIsAddUserModalOpen(true);
+  };
+
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setIsEditUserModalOpen(true);
   };
 
   return (
@@ -36,10 +46,23 @@ export default function UsersPage() {
           </Breadcrumb>
         </div>
       </div>
-      <DataTable columns={columns} data={users} onAddUser={handleAddUser} />
+      <DataTable
+        columns={columns}
+        data={users}
+        onAddUser={handleAddUser}
+        onEditUser={handleEditUser}
+      />
       <AddUserModal
         isOpen={isAddUserModalOpen}
         onClose={() => setIsAddUserModalOpen(false)}
+      />
+      <EditUserModal
+        isOpen={isEditUserModalOpen}
+        onClose={() => {
+          setIsEditUserModalOpen(false);
+          setEditingUser(null);
+        }}
+        user={editingUser}
       />
     </div>
   );

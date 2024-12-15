@@ -53,6 +53,16 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    verifyPassword: builder.mutation<
+      { isValid: boolean },
+      { id: string; password: string }
+    >({
+      query: ({ id, password }) => ({
+        url: `users/${id}/`,
+        method: "POST",
+        body: { password },
+      }),
+    }),
 
     // Transaction endpoints
     getTransactions: builder.query({
@@ -206,6 +216,7 @@ export const {
   useAddUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
+  useVerifyPasswordMutation,
   useGetTransactionsQuery,
   useAddTransactionMutation,
   useDeleteTransactionMutation,

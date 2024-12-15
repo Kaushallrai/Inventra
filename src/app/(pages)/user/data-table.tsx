@@ -37,12 +37,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onAddUser: () => void;
+  onEditUser: () => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onAddUser,
+  onEditUser,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -68,6 +70,9 @@ export function DataTable<TData, TValue>({
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    meta: {
+      onEditUser,
     },
   });
 

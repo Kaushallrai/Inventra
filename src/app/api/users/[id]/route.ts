@@ -98,3 +98,44 @@ export async function DELETE(
     );
   }
 }
+
+// New method for password verification
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = Number(params.id);
+    const body = await req.json();
+    const { password } = body;
+
+    if (!id) {
+      return NextResponse.json({ message: "ID is required" }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: id },
+      select: { password: true },
+    });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    // Plain text password comparison
+    const isPasswordValid = password === user.password;
+
+    return NextResponse.json(
+      {
+        isValid: isPasswordValid,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Error verifying password:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

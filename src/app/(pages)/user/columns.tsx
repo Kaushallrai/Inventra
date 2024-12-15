@@ -4,6 +4,18 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Edit, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useDeleteUserMutation } from "@/redux/apiSlice";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export interface User {
   id: string;
@@ -130,25 +142,44 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
+      const [deleteUser] = useDeleteUserMutation();
+      const handleDelete = async () => {
+        await deleteUser(row.original.id);
+      };
       return (
         <div className="flex space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => console.log("Edit user", row.original)}
+            onClick={() => table.options.meta?.onEditUser(row.original)}
           >
             <Edit className="h-4 w-4 mr-1" />
             Edit
           </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => console.log("Delete user", row.original)}
-          >
-            <Trash2 className="h-4 w-4 mr-1" />
-            Delete
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="h-4 w-4 mr-1" />
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  user account for {row.original.name}.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       );
     },
