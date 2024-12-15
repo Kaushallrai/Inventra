@@ -31,19 +31,23 @@ export default function Users() {
   };
 
   return (
-    <div className="container mx-auto mt-4 px-4">
-      <div className="mb-4">
-        <h1 className="text-2xl font-semibold mb-2">Users</h1>
-        <div className="flex items-center gap-2">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">Users</BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>All Users</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+    <div className="mt-4 ">
+      <div>
+        <h1 className="text-2xl font-semibold ">Users</h1>
+        <div className="flex h-12 shrink-0 items-center gap-2 ">
+          <div className="flex items-center gap-2 ">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  Users
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>All Users</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
         </div>
       </div>
       <DataTable
