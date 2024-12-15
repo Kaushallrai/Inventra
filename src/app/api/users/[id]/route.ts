@@ -52,7 +52,7 @@ export async function PUT(
     });
 
     return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating user:", error);
     if (error.code === "P2002") {
       return NextResponse.json(
@@ -87,7 +87,7 @@ export async function DELETE(
     }
 
     return new Response(null, { status: 204 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting user:", error);
     if (error.code === "P2025") {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
