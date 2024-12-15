@@ -66,7 +66,7 @@ export function NavMain({
                   <SidebarMenuButton
                     tooltip={item.title}
                     className={`my-1 ${
-                      pathname === item.url ? "bg-blue-100" : ""
+                      pathname === item.url ? "bg-gray-100" : ""
                     }`}
                   >
                     <div className="flex items-center w-full gap-2">

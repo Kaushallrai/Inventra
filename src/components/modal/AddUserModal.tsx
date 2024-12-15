@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +25,7 @@ import { useAddUserMutation } from "@/redux/apiSlice";
 import { toast } from "sonner";
 import { BaseModal } from ".";
 
-// Improved form schema with password validation
+// Updated form schema with confirm password validation
 const formSchema = z
   .object({
     name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -33,11 +33,17 @@ const formSchema = z
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters" }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: "Confirm Password must be at least 8 characters" }),
     role: z.enum(["Admin", "User", "Moderator"], {
       required_error: "Please select a role",
     }),
   })
-  .strict(); // Prevents additional fields
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"], // Points the error to the confirmPassword field
+  });
 
 interface AddUserModalProps {
   isOpen: boolean;
@@ -53,6 +59,7 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
       name: "",
       email: "",
       password: "",
+      confirmPassword: "",
       role: undefined,
     },
   });
@@ -139,6 +146,24 @@ export function AddUserModal({ isOpen, onClose }: AddUserModalProps) {
                   <Input
                     type="password"
                     placeholder="Enter user's password"
+                    {...field}
+                    autoComplete="new-password"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Confirm user's password"
                     {...field}
                     autoComplete="new-password"
                   />
