@@ -1,11 +1,9 @@
 import { signInSchema } from "@/lib/zod";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import Github from "next-auth/providers/github";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    Github,
     Credentials({
       credentials: {
         email: { label: "Email", type: "email", placeholder: "Email" },
@@ -28,7 +26,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: "1",
           name: "Kaushal Rai",
           email: "kaushal@gmail.com",
-          password: "kaushalrai", // Add a password for validation
+          password: "kaushalrai",
           role: "admin",
         };
 
