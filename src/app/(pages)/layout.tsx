@@ -2,8 +2,10 @@ import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-
 import Header from "@/components/header";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Inventra",
@@ -15,6 +17,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/signin");
+  }
+
   const cookieStore = await cookies();
   const defaultOpen =
     (await cookieStore).get("sidebar:state")?.value === "true";

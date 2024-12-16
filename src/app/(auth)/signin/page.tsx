@@ -1,6 +1,6 @@
 import SignIn from "@/components/ui/signin";
 
-export default function Login() {
+export default async function Login() {
   return (
     <div className="flex h-screen w-full items-center justify-center px-4">
       <SignIn />

@@ -1,7 +1,7 @@
 "use client";
 
 import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+
 import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,7 +31,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { toast } from "sonner";
 
 export function NavUser({
   user,
@@ -44,18 +43,6 @@ export function NavUser({
 }) {
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const { isMobile } = useSidebar();
-
-  const handleLogout = async () => {
-    try {
-      await signOut({
-        callbackUrl: "/signin",
-        redirect: true,
-      });
-      toast.success("Successfully logged out");
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-  };
 
   return (
     <SidebarMenu>
@@ -131,15 +118,13 @@ export function NavUser({
                     Are you sure you want to log out?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    You will be redirected to the signin page and your current
+                    You will be redirected to the login page and your current
                     session will end.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleLogout}>
-                    Continue
-                  </AlertDialogAction>
+                  <AlertDialogAction>Continue</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

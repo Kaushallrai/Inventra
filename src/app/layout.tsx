@@ -4,8 +4,9 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { ReduxProvider } from "@/providers/ReduxProvider";
-import { SessionProvider } from "next-auth/react";
+
 import { Toaster } from "@/components/ui/sonner";
+import AuthProvider from "./context/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Inventra",
@@ -22,8 +23,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SessionProvider>
-      <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
+      <AuthProvider>
         <body className={poppins.className}>
           <ReduxProvider>
             <ThemeProvider
@@ -42,7 +43,7 @@ export default async function RootLayout({
             </ThemeProvider>
           </ReduxProvider>
         </body>
-      </html>
-    </SessionProvider>
+      </AuthProvider>
+    </html>
   );
 }

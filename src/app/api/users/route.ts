@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 // GET request to fetch all users
 export async function GET() {
@@ -36,14 +37,14 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-
+    const hashedPassword = await bcrypt.hash(password, 10);
     // Create new user in the database
     const newUser = await prisma.user.create({
       data: {
         name,
         email,
-        password,
-        role: role || "User", // Use the provided role or default to "User"
+        password: hashedPassword,
+        role: role || "User",
       },
       select: {
         id: true,

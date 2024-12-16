@@ -16,8 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
 import { signInSchema } from "@/lib/zod";
-import { handleCredentialsSignin } from "@/app/actions/authActions";
+
 import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import LoadingButton from "./loading-button";
 import ErrorMessage from "./error-message";
@@ -25,6 +27,7 @@ import Link from "next/link";
 
 export default function SignIn() {
   const [globalError, setGlobalError] = useState<string>("");
+  const router = useRouter();
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -35,9 +38,17 @@ export default function SignIn() {
 
   const onSubmit = async (values: z.infer<typeof signInSchema>) => {
     try {
-      const result = await handleCredentialsSignin(values);
-      if (result?.message) {
-        setGlobalError(result.message);
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: values.email,
+        password: values.password,
+      });
+
+      if (result?.error) {
+        setGlobalError(result.error);
+      } else {
+        router.push("/dashboard");
+        router.refresh();
       }
     } catch (error) {
       console.error("An unexpected error occurred while signing in:", error);
@@ -46,9 +57,9 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex items-center  w-full p-4 justify-center">
-      <div className="flex text-card-foreground shadow-md  border rounded-xl overflow-hidden">
-        <Card className=" hidden md:flex bg-gray-500 w-[400px] "></Card>
+    <div className="flex items-center w-full p-4 justify-center">
+      <div className="flex text-card-foreground shadow-md border rounded-xl overflow-hidden">
+        <Card className="hidden md:flex bg-gray-500 w-[400px]"></Card>
         <Card className="w-[400px] max-w-md">
           <CardHeader className="my-6">
             <CardTitle className="text-2xl font-semibold text-center text-gray-800">
@@ -63,7 +74,7 @@ export default function SignIn() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-5 "
+                className="space-y-5"
               >
                 <FormField
                   control={form.control}
