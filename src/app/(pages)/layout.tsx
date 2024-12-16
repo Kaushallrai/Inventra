@@ -4,7 +4,6 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 
 import Header from "@/components/header";
-import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Inventra",
@@ -26,7 +25,6 @@ export default async function RootLayout({
       <SidebarInset>
         <Header />
         <main className="px-10">{children}</main>
-        <Toaster richColors />
       </SidebarInset>
     </SidebarProvider>
   );

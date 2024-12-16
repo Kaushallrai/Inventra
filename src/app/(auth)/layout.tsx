@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Inventra",
@@ -9,5 +10,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <main>{children}</main>;
+  return (
+    <main>
+      <Toaster richColors position="top-right" duration={3000} />
+      {children}
+    </main>
+  );
 }

@@ -31,6 +31,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { toast } from "sonner";
 
 export function NavUser({
   user,
@@ -50,6 +51,7 @@ export function NavUser({
         callbackUrl: "/signin",
         redirect: true,
       });
+      toast.success("Successfully logged out");
     } catch (error) {
       console.error("Logout failed", error);
     }

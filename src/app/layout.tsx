@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Inventra",
@@ -32,6 +33,12 @@ export default async function RootLayout({
               disableTransitionOnChange
             >
               <div>{children}</div>
+              <Toaster
+                richColors
+                closeButton
+                position="top-right"
+                duration={3000}
+              />
             </ThemeProvider>
           </ReduxProvider>
         </body>
