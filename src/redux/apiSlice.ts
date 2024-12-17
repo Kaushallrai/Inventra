@@ -1,13 +1,18 @@
-// src/redux/apiSlice.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface User {
   id: number;
   name: string;
   email: string;
-  status: string;
-  role: string;
-  password: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Transaction {
+  id: number;
+  userId: number;
+  amount: number;
+  description: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,14 +20,59 @@ interface User {
 interface Category {
   id: number;
   name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Product {
+  id: number;
+  categoryId: number;
+  name: string;
+  description: string;
+  price: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Brand {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Variant {
+  id: number;
+  productId: number;
+  name: string;
+  price: number;
+  sku: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Supplier {
+  id: number;
+  name: string;
+  contact: string | null;
+  email: string | null;
+  address: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const apiSlice = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "/api",
-  }),
-  tagTypes: ["User", "Transaction", "Category", "Product", "Brand", "Variant"],
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
+  tagTypes: [
+    "User",
+    "Transaction",
+    "Category",
+    "Product",
+    "Brand",
+    "Variant",
+    "Supplier",
+  ],
   endpoints: (builder) => ({
     // User endpoints
     getUsers: builder.query<User[], void>({
@@ -31,7 +81,7 @@ export const apiSlice = createApi({
     }),
     addUser: builder.mutation<
       User,
-      Omit<User, "id" | "createdAt" | "updatedAt"> & { password: string }
+      Omit<User, "id" | "createdAt" | "updatedAt">
     >({
       query: (user) => ({
         url: "/users",
@@ -55,28 +105,33 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-
     // Transaction endpoints
-    getTransactions: builder.query({
+    getTransactions: builder.query<Transaction[], void>({
       query: () => "/transactions",
       providesTags: ["Transaction"],
     }),
-    addTransaction: builder.mutation({
+    addTransaction: builder.mutation<
+      Transaction,
+      Omit<Transaction, "id" | "createdAt" | "updatedAt">
+    >({
       query: (transaction) => ({
         url: "/transactions",
         method: "POST",
         body: transaction,
       }),
-      invalidatesTags: ["Transaction", "Variant"],
+      invalidatesTags: ["Transaction"],
     }),
-    deleteTransaction: builder.mutation({
+    deleteTransaction: builder.mutation<void, number>({
       query: (id) => ({
         url: `/transactions/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Transaction"],
     }),
-    updateTransaction: builder.mutation({
+    updateTransaction: builder.mutation<
+      Transaction,
+      Partial<Transaction> & { id: number }
+    >({
       query: ({ id, ...transaction }) => ({
         url: `/transactions/${id}`,
         method: "PUT",
@@ -84,13 +139,15 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Transaction"],
     }),
-
     // Category endpoints
-    getCategories: builder.query({
+    getCategories: builder.query<Category[], void>({
       query: () => "/categories",
       providesTags: ["Category"],
     }),
-    addCategory: builder.mutation({
+    addCategory: builder.mutation<
+      Category,
+      Omit<Category, "id" | "createdAt" | "updatedAt">
+    >({
       query: (category) => ({
         url: "/categories",
         method: "POST",
@@ -98,72 +155,81 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Category"],
     }),
-    deleteCategory: builder.mutation<Category, { id: number; name: string }>({
+    deleteCategory: builder.mutation<void, number>({
       query: (id) => ({
         url: `/categories/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Category"],
     }),
-    updateCategory: builder.mutation({
-      query: ({ id, name }) => ({
+    updateCategory: builder.mutation<
+      Category,
+      Partial<Category> & { id: number }
+    >({
+      query: ({ id, ...category }) => ({
         url: `/categories/${id}`,
         method: "PUT",
-        body: { name },
+        body: category,
       }),
       invalidatesTags: ["Category"],
     }),
-
     // Product endpoints
-    getProducts: builder.query({
+    getProducts: builder.query<Product[], void>({
       query: () => "/products",
       providesTags: ["Product"],
     }),
-    addProduct: builder.mutation({
+    addProduct: builder.mutation<
+      Product,
+      Omit<Product, "id" | "createdAt" | "updatedAt">
+    >({
       query: (product) => ({
         url: "/products",
         method: "POST",
         body: product,
       }),
-      invalidatesTags: ["Product", "Category"],
+      invalidatesTags: ["Product"],
     }),
-    deleteProduct: builder.mutation({
+    deleteProduct: builder.mutation<void, number>({
       query: (id) => ({
         url: `/products/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Product"],
     }),
-    updateProduct: builder.mutation({
-      query: ({ id, ...product }) => ({
-        url: `/products/${id}`,
-        method: "PUT",
-        body: product,
-      }),
-      invalidatesTags: ["Product"],
-    }),
-
+    updateProduct: builder.mutation<Product, Partial<Product> & { id: number }>(
+      {
+        query: ({ id, ...product }) => ({
+          url: `/products/${id}`,
+          method: "PUT",
+          body: product,
+        }),
+        invalidatesTags: ["Product"],
+      }
+    ),
     // Brand endpoints
-    getBrands: builder.query({
+    getBrands: builder.query<Brand[], void>({
       query: () => "/brands",
       providesTags: ["Brand"],
     }),
-    addBrand: builder.mutation({
+    addBrand: builder.mutation<
+      Brand,
+      Omit<Brand, "id" | "createdAt" | "updatedAt">
+    >({
       query: (brand) => ({
         url: "/brands",
         method: "POST",
         body: brand,
       }),
-      invalidatesTags: ["Brand", "Product"],
+      invalidatesTags: ["Brand"],
     }),
-    deleteBrand: builder.mutation({
+    deleteBrand: builder.mutation<void, number>({
       query: (id) => ({
         url: `/brands/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Brand"],
     }),
-    updateBrand: builder.mutation({
+    updateBrand: builder.mutation<Brand, Partial<Brand> & { id: number }>({
       query: ({ id, ...brand }) => ({
         url: `/brands/${id}`,
         method: "PUT",
@@ -171,34 +237,72 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Brand"],
     }),
-
     // Variant endpoints
-    getVariants: builder.query({
+    getVariants: builder.query<Variant[], void>({
       query: () => "/variants",
       providesTags: ["Variant"],
     }),
-    addVariant: builder.mutation({
+    addVariant: builder.mutation<
+      Variant,
+      Omit<Variant, "id" | "createdAt" | "updatedAt">
+    >({
       query: (variant) => ({
         url: "/variants",
         method: "POST",
         body: variant,
       }),
-      invalidatesTags: ["Variant", "Brand"],
+      invalidatesTags: ["Variant"],
     }),
-    deleteVariant: builder.mutation({
+    deleteVariant: builder.mutation<void, number>({
       query: (id) => ({
         url: `/variants/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Variant"],
     }),
-    updateVariant: builder.mutation({
-      query: ({ id, ...variant }) => ({
-        url: `/variants/${id}`,
-        method: "PUT",
-        body: variant,
+    updateVariant: builder.mutation<Variant, Partial<Variant> & { id: number }>(
+      {
+        query: ({ id, ...variant }) => ({
+          url: `/variants/${id}`,
+          method: "PUT",
+          body: variant,
+        }),
+        invalidatesTags: ["Variant"],
+      }
+    ),
+    // Supplier endpoints
+    getSuppliers: builder.query<Supplier[], void>({
+      query: () => "/suppliers",
+      providesTags: ["Supplier"],
+    }),
+    addSupplier: builder.mutation<
+      Supplier,
+      Omit<Supplier, "id" | "createdAt" | "updatedAt">
+    >({
+      query: (supplier) => ({
+        url: "/suppliers",
+        method: "POST",
+        body: supplier,
       }),
-      invalidatesTags: ["Variant"],
+      invalidatesTags: ["Supplier"],
+    }),
+    deleteSupplier: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `/suppliers/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Supplier"],
+    }),
+    updateSupplier: builder.mutation<
+      Supplier,
+      Partial<Supplier> & { id: number }
+    >({
+      query: ({ id, ...supplier }) => ({
+        url: `/suppliers/${id}`,
+        method: "PUT",
+        body: supplier,
+      }),
+      invalidatesTags: ["Supplier"],
     }),
   }),
 });
@@ -228,4 +332,8 @@ export const {
   useAddVariantMutation,
   useDeleteVariantMutation,
   useUpdateVariantMutation,
+  useGetSuppliersQuery,
+  useAddSupplierMutation,
+  useDeleteSupplierMutation,
+  useUpdateSupplierMutation,
 } = apiSlice;

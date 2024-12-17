@@ -1,5 +1,5 @@
 "use client";
-import { useSession } from "next-auth/react";
+
 import {
   Frame,
   GalleryVerticalEnd,
@@ -28,7 +28,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useGetCategoriesQuery } from "@/redux/apiSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AddCategoryModal } from "../modal/AddCategoryModal";
 import { EditCategoryModal } from "../modal/EditCategoryModal";
 
@@ -38,13 +38,6 @@ interface Category {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    console.log("Client-side Session:", session);
-    console.log("Client-side Status:", status);
-  }, [session, status]);
-
   const { data: categories = [], isLoading, error } = useGetCategoriesQuery({});
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -126,12 +119,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: "Purchase",
         url: "/purchase",
         icon: Package,
-        isSimple: true,
       },
       {
         title: "Supplier",
         url: "#",
         icon: Truck,
+        isSimple: true,
       },
       {
         title: "Users",

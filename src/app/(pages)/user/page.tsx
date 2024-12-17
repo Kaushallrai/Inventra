@@ -1,7 +1,7 @@
 "use client";
 import { AddUserModal } from "@/components/modal/AddUserModal";
 import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { DataTable } from "../supplier/data-table";
 import {
   Breadcrumb,
   BreadcrumbItem,
