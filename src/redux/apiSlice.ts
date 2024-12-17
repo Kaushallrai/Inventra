@@ -144,6 +144,10 @@ export const apiSlice = createApi({
       query: () => "/categories",
       providesTags: ["Category"],
     }),
+    getCategoryByName: builder.query<Category, string>({
+      query: (name) => `/categories/byName/${name}`,
+      providesTags: ["Category"],
+    }),
     addCategory: builder.mutation<
       Category,
       Omit<Category, "id" | "createdAt" | "updatedAt">
@@ -317,6 +321,7 @@ export const {
   useDeleteTransactionMutation,
   useUpdateTransactionMutation,
   useGetCategoriesQuery,
+  useGetCategoryByNameQuery,
   useAddCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,

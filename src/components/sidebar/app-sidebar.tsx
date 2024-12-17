@@ -82,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         items: [
           ...categories.map((category: Category) => ({
             title: category.name,
-            url: `/category/${category.id}`,
+            url: `/category/${category.name.toLowerCase()}`,
           })),
           {
             title: "Add Category",
