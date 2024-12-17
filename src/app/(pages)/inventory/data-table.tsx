@@ -89,7 +89,7 @@ export function DataTable<TData, TValue>({
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="ml-2">
+          <Button variant="outline" size="default" className="ml-2">
             <Filter className="h-4 w-4 mr-2" />
             {columnId}
           </Button>
@@ -129,7 +129,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
 
-        {["status", "category"].map((columnId) => (
+        {["category", "status"].map((columnId) => (
           <ColumnFilterDropdown key={columnId} columnId={columnId} />
         ))}
 
@@ -186,14 +186,14 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id} className="py-3 ">
                       {cell.column.id === "status" ? (
                         <span
-                          className={`px-3 py-1 text-white text-xs font-medium rounded-md ${
+                          className={`px-3 py-1 text-xs font-medium rounded-md border ${
                             cell.getValue() === "In Stock"
-                              ? "bg-green-400"
+                              ? "bg-green-100 text-green-700 border-green-300"
                               : cell.getValue() === "Out of Stock"
-                              ? "bg-red-400"
+                              ? "bg-red-100 text-red-700 border-red-300"
                               : cell.getValue() === "Low Stock"
-                              ? "bg-orange-400"
-                              : "bg-yellow-500"
+                              ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+                              : "bg-gray-100 text-gray-700 border-gray-300"
                           }`}
                         >
                           {cell.getValue()}

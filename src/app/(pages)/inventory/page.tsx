@@ -13,7 +13,7 @@ async function getData(): Promise<InventoryItem[]> {
     {
       id: "1",
       name: "Beer A",
-      category: "Liquor",
+      category: "Tabacco Products",
       quantity: 50,
       pricePerUnit: 150,
       supplier: "Supplier X",

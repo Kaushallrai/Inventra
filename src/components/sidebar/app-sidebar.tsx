@@ -38,18 +38,9 @@ interface Category {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: categories = [], isLoading, error } = useGetCategoriesQuery({});
+  const { data: categories = [] } = useGetCategoriesQuery();
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    console.error("Failed to load categories", error);
-    return <div>Error loading categories</div>;
-  }
 
   const handleAddCategoryClick = () => {
     setShowAddCategoryModal(true);
