@@ -30,28 +30,17 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-
-const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "in stock":
-      return "bg-green-50 text-green-700";
-    case "low stock":
-      return "bg-yellow-50 text-yellow-700";
-    case "out of stock":
-      return "bg-red-50 text-red-700";
-    case "discontinued":
-      return "bg-gray-50 text-gray-700";
-    default:
-      return "bg-blue-50 text-blue-700";
-  }
-};
 
 export function DataTable<TData, TValue>({
   columns,
@@ -84,34 +73,66 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const renderCell = (cell: any) => {
-    // Check if the column is status and apply color coding
-    if (cell.column.id.toLowerCase() === "status") {
-      const status = cell.getValue();
-      return (
-        <span
-          className={`px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(
-            status
-          )}`}
-        >
-          {status}
-        </span>
-      );
-    }
-    return flexRender(cell.column.columnDef.cell, cell.getContext());
+  const getUniqueColumnValues = (columnId: string) => {
+    return Array.from(
+      new Set(
+        table
+          .getCoreRowModel()
+          .rows.map((row) => row.original[columnId as keyof TData] as string)
+      )
+    ).filter(Boolean);
+  };
+
+  const ColumnFilterDropdown = ({ columnId }: { columnId: string }) => {
+    const uniqueValues = getUniqueColumnValues(columnId);
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="sm" className="ml-2">
+            <Filter className="h-4 w-4 mr-2" />
+            {columnId}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuLabel>Filter by {columnId}</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup
+            value={
+              (table.getColumn(columnId)?.getFilterValue() as string) || ""
+            }
+            onValueChange={(value) => {
+              table.getColumn(columnId)?.setFilterValue(value || undefined);
+            }}
+          >
+            <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+            {uniqueValues.map((value) => (
+              <DropdownMenuRadioItem key={value} value={value.toString()}>
+                {value}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
   };
 
   return (
     <div className="space-y-4 py-4 rounded-lg">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2">
         <Input
-          placeholder="Filter names..."
+          placeholder="Search all columns..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
+
+        {["status", "category"].map((columnId) => (
+          <ColumnFilterDropdown key={columnId} columnId={columnId} />
+        ))}
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -138,11 +159,11 @@ export function DataTable<TData, TValue>({
 
       <div className="border rounded-md overflow-hidden">
         <Table>
-          <TableHeader className="">
+          <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className=" text-gray-400 py-1">
+                  <TableHead key={header.id} className="text-gray-400 py-1">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -160,11 +181,29 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className=""
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
-                      {renderCell(cell)}
+                    <TableCell key={cell.id} className="py-3 ">
+                      {cell.column.id === "status" ? (
+                        <span
+                          className={`px-3 py-1 text-white text-xs font-medium rounded-md ${
+                            cell.getValue() === "In Stock"
+                              ? "bg-green-400"
+                              : cell.getValue() === "Out of Stock"
+                              ? "bg-red-400"
+                              : cell.getValue() === "Low Stock"
+                              ? "bg-orange-400"
+                              : "bg-yellow-500"
+                          }`}
+                        >
+                          {cell.getValue()}
+                        </span>
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -173,7 +212,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24  text-center text-gray-500"
+                  className="h-24 text-center text-gray-500"
                 >
                   No results.
                 </TableCell>
