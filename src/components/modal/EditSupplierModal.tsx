@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -16,16 +16,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   useUpdateSupplierMutation,
   useDeleteSupplierMutation,
-  useGetSuppliersQuery,
 } from "@/redux/apiSlice";
 import { BaseModal } from ".";
 import { toast } from "sonner";
@@ -38,6 +30,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 const formSchema = z.object({
@@ -68,19 +61,19 @@ interface Supplier {
 interface EditSupplierModalProps {
   isOpen: boolean;
   onClose: () => void;
+  supplier: Supplier | null;
 }
 
-export function EditSupplierModal({ isOpen, onClose }: EditSupplierModalProps) {
-  const { data: suppliers = [], isLoading: isSuppliersLoading } =
-    useGetSuppliersQuery({});
+export function EditSupplierModal({
+  isOpen,
+  onClose,
+  supplier,
+}: EditSupplierModalProps) {
   const [updateSupplier, { isLoading: isUpdating }] =
     useUpdateSupplierMutation();
   const [deleteSupplier, { isLoading: isDeleting }] =
     useDeleteSupplierMutation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
-    null
-  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -92,12 +85,8 @@ export function EditSupplierModal({ isOpen, onClose }: EditSupplierModalProps) {
     },
   });
 
-  const onSupplierSelect = (supplierId: string) => {
-    const supplier = suppliers.find(
-      (sup: Supplier) => sup.id.toString() === supplierId
-    );
-    if (supplier) {
-      setSelectedSupplier(supplier);
+  useEffect(() => {
+    if (supplier && isOpen) {
       form.reset({
         name: supplier.name,
         contact: supplier.contact,
@@ -105,22 +94,21 @@ export function EditSupplierModal({ isOpen, onClose }: EditSupplierModalProps) {
         address: supplier.address || "",
       });
     }
-  };
+  }, [supplier, isOpen]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!selectedSupplier) return;
+    if (!supplier) return;
 
     try {
       const result = await updateSupplier({
-        id: selectedSupplier.id,
+        id: supplier.id,
         ...values,
         email: values.email || null,
         address: values.address || null,
       }).unwrap();
       console.log("Update result:", result);
       toast.success("Supplier updated successfully");
-      setSelectedSupplier(null);
-      form.reset();
+      onClose();
     } catch (error) {
       console.error("Failed to update supplier:", error);
       toast.error("Failed to update supplier");
@@ -128,20 +116,19 @@ export function EditSupplierModal({ isOpen, onClose }: EditSupplierModalProps) {
   }
 
   async function onDelete() {
-    if (!selectedSupplier) return;
+    if (!supplier) return;
 
     try {
-      const result = await deleteSupplier(selectedSupplier.id).unwrap();
-      console.log("Delete result:", result);
+      await deleteSupplier(supplier.id).unwrap();
       toast.success("Supplier deleted successfully");
-      setSelectedSupplier(null);
-      form.reset();
-      setShowDeleteConfirm(false);
+      onClose();
     } catch (error) {
       console.error("Failed to delete supplier:", error);
       toast.error("Failed to delete supplier");
     }
   }
+
+  if (!supplier) return null;
 
   return (
     <>
@@ -149,131 +136,98 @@ export function EditSupplierModal({ isOpen, onClose }: EditSupplierModalProps) {
         isOpen={isOpen}
         onClose={onClose}
         title="Edit Supplier"
-        description="Select a supplier to edit or delete"
+        description="Edit supplier details"
       >
-        <div className="space-y-6">
-          <Select onValueChange={onSupplierSelect}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a supplier" />
-            </SelectTrigger>
-            <SelectContent>
-              {isSuppliersLoading ? (
-                <SelectItem value="loading" disabled>
-                  Loading suppliers...
-                </SelectItem>
-              ) : (
-                suppliers.map((supplier: Supplier) => (
-                  <SelectItem key={supplier.id} value={supplier.id.toString()}>
-                    {supplier.name}
-                  </SelectItem>
-                ))
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter supplier name"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </SelectContent>
-          </Select>
-
-          {selectedSupplier && (
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
+            />
+            <FormField
+              control={form.control}
+              name="contact"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter supplier contact"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Enter supplier email"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter supplier address"
+                      {...field}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-between space-x-2">
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => setShowDeleteConfirm(true)}
               >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter supplier name"
-                          {...field}
-                          autoComplete="off"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="contact"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contact</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter supplier contact"
-                          {...field}
-                          autoComplete="off"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="Enter supplier email"
-                          {...field}
-                          autoComplete="off"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter supplier address"
-                          {...field}
-                          autoComplete="off"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="flex justify-between space-x-2">
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => setShowDeleteConfirm(true)}
-                  >
-                    Delete
-                  </Button>
-                  <div className="space-x-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        setSelectedSupplier(null);
-                        form.reset();
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={isUpdating}>
-                      {isUpdating ? "Updating..." : "Update Supplier"}
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </Form>
-          )}
-        </div>
+                Delete
+              </Button>
+              <div className="space-x-2">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isUpdating}>
+                  {isUpdating ? "Updating..." : "Update Supplier"}
+                </Button>
+              </div>
+            </div>
+          </form>
+        </Form>
       </BaseModal>
 
       <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
