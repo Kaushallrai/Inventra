@@ -1,5 +1,5 @@
 "use client";
-// import { AddSupplierModal } from "@/components/modal/AddSupplierModal";
+import { AddSupplierModal } from "@/components/modal/AddSupplierModal";
 
 import {
   Breadcrumb,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useState } from "react";
 import { useGetSuppliersQuery } from "@/redux/apiSlice";
-// import { EditSupplierModal } from "@/components/modal/EditSupplierModal";
+import { EditSupplierModal } from "@/components/modal/EditSupplierModal";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 
@@ -57,7 +57,7 @@ export default function Suppliers() {
         onAddSupplier={handleAddSupplier}
         onEditSupplier={handleEditSupplier}
       />
-      {/* <AddSupplierModal
+      <AddSupplierModal
         isOpen={isAddSupplierModalOpen}
         onClose={() => setIsAddSupplierModalOpen(false)}
       />
@@ -68,7 +68,7 @@ export default function Suppliers() {
           setEditingSupplier(null);
         }}
         supplier={editingSupplier}
-      /> */}
+      />
     </div>
   );
 }

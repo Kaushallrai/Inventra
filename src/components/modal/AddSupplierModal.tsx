@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,9 +14,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useUpdateSupplierMutation } from "@/redux/apiSlice";
-import { BaseModal } from ".";
+import { useAddSupplierMutation } from "@/redux/apiSlice";
 import { toast } from "sonner";
+import { BaseModal } from ".";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -36,27 +35,13 @@ const formSchema = z.object({
     .or(z.literal("")),
 });
 
-interface Supplier {
-  id: number;
-  name: string;
-  contact: string;
-  email: string | null;
-  address: string | null;
-}
-
-interface EditSupplierModalProps {
+interface AddSupplierModalProps {
   isOpen: boolean;
   onClose: () => void;
-  supplier: Supplier | null;
 }
 
-export function EditSupplierModal({
-  isOpen,
-  onClose,
-  supplier,
-}: EditSupplierModalProps) {
-  const [updateSupplier, { isLoading: isUpdating }] =
-    useUpdateSupplierMutation();
+export function AddSupplierModal({ isOpen, onClose }: AddSupplierModalProps) {
+  const [addSupplier, { isLoading }] = useAddSupplierMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,47 +53,42 @@ export function EditSupplierModal({
     },
   });
 
-  useEffect(() => {
-    if (supplier && isOpen) {
-      form.reset({
-        name: supplier.name,
-        contact: supplier.contact,
-        email: supplier.email || "",
-        address: supplier.address || "",
-      });
-    }
-  }, [supplier, isOpen]);
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!supplier) return;
-
     try {
-      const result = await updateSupplier({
-        id: supplier.id,
-        ...values,
-        email: values.email || null,
-        address: values.address || null,
-      }).unwrap();
-      console.log("Update result:", result);
-      toast.success("Supplier updated successfully");
+      const trimmedValues = {
+        name: values.name.trim(),
+        contact: values.contact.trim(),
+        email: values.email?.trim() || null,
+        address: values.address?.trim() || null,
+      };
+
+      const response = await addSupplier(trimmedValues).unwrap();
+
+      toast.success("Supplier added successfully");
+      form.reset();
       onClose();
+
+      return response;
     } catch (error) {
-      console.error("Failed to update supplier:", error);
-      toast.error("Failed to update supplier");
+      console.error("Failed to add supplier:", error);
+      toast.error("Failed to add supplier");
+      throw error;
     }
   }
-
-  if (!supplier) return null;
 
   return (
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Edit Supplier"
-      description="Edit supplier details"
+      title="Add New Supplier"
+      description="Enter the details for the new supplier"
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-5"
+          noValidate
+        >
           <FormField
             control={form.control}
             name="name"
@@ -117,7 +97,7 @@ export function EditSupplierModal({
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter supplier name"
+                    placeholder="Enter supplier's name"
                     {...field}
                     autoComplete="off"
                   />
@@ -133,16 +113,31 @@ export function EditSupplierModal({
               <FormItem>
                 <FormLabel>Contact</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter supplier contact"
-                    {...field}
-                    autoComplete="off"
-                  />
+                  <div className="flex items-center">
+                    <span className="flex items-center px-3 py-[5px] bg-gray-100 border border-gray-200 text-gray-600 rounded-l-md shadow-sm ">
+                      🇳🇵
+                    </span>
+                    <span className="flag-icon flag-icon-np"></span>
+                    <Input
+                      placeholder="(+977)&nbsp;Enter supplier's contact "
+                      {...field}
+                      autoComplete="off"
+                      className="rounded-l-none"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(
+                          value.startsWith("+977") ? value.slice(4) : value
+                        );
+                      }}
+                      value={field.value || ""}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="email"
@@ -152,7 +147,7 @@ export function EditSupplierModal({
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Enter supplier email"
+                    placeholder="Enter supplier's email"
                     {...field}
                     autoComplete="off"
                   />
@@ -169,7 +164,7 @@ export function EditSupplierModal({
                 <FormLabel>Address</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Enter supplier address"
+                    placeholder="Enter supplier's address"
                     {...field}
                     autoComplete="off"
                   />
@@ -178,12 +173,17 @@ export function EditSupplierModal({
               </FormItem>
             )}
           />
-          <div className="flex justify-end space-x-2">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex justify-end space-x-2 mt-5">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              disabled={isLoading}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isUpdating}>
-              {isUpdating ? "Updating..." : "Update Supplier"}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Adding..." : "Add Supplier"}
             </Button>
           </div>
         </form>

@@ -25,7 +25,6 @@ import { useAddUserMutation } from "@/redux/apiSlice";
 import { toast } from "sonner";
 import { BaseModal } from ".";
 
-// Updated form schema with confirm password validation
 const formSchema = z
   .object({
     name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -42,7 +41,7 @@ const formSchema = z
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"], // Points the error to the confirmPassword field
+    path: ["confirmPassword"],
   });
 
 interface AddUserModalProps {
