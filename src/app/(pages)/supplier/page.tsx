@@ -1,7 +1,6 @@
 "use client";
 // import { AddSupplierModal } from "@/components/modal/AddSupplierModal";
 
-import { DataTable } from "../supplier/data-table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +12,7 @@ import { useState } from "react";
 import { useGetSuppliersQuery } from "@/redux/apiSlice";
 // import { EditSupplierModal } from "@/components/modal/EditSupplierModal";
 import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 export default function Suppliers() {
   const [isAddSupplierModalOpen, setIsAddSupplierModalOpen] = useState(false);

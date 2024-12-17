@@ -1,7 +1,7 @@
 "use client";
 import { AddUserModal } from "@/components/modal/AddUserModal";
 import { columns } from "./columns";
-import { DataTable } from "../supplier/data-table";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { useGetUsersQuery } from "@/redux/apiSlice";
 import { EditUserModal } from "@/components/modal/EditUserModal";
+import { DataTable } from "./data-table";
 
 export default function Users() {
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);

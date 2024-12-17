@@ -122,7 +122,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
       {
         title: "Supplier",
-        url: "#",
+        url: "/supplier",
         icon: Truck,
         isSimple: true,
       },
