@@ -1,5 +1,3 @@
-"use client";
-
 interface Category {
   id: number;
   name: string;
