@@ -212,7 +212,7 @@ export const apiSlice = createApi({
     ),
     // Brand endpoints
     getBrands: builder.query<Brand[], void>({
-      query: () => "/brands",
+      query: () => "/brand",
       providesTags: ["Brand"],
     }),
     addBrand: builder.mutation<
@@ -220,7 +220,7 @@ export const apiSlice = createApi({
       Omit<Brand, "id" | "createdAt" | "updatedAt">
     >({
       query: (brand) => ({
-        url: "/brands",
+        url: "/brand",
         method: "POST",
         body: brand,
       }),
@@ -228,14 +228,14 @@ export const apiSlice = createApi({
     }),
     deleteBrand: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/brands/${id}`,
+        url: `/brand/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Brand"],
     }),
     updateBrand: builder.mutation<Brand, Partial<Brand> & { id: number }>({
       query: ({ id, ...brand }) => ({
-        url: `/brands/${id}`,
+        url: `/brand/${id}`,
         method: "PUT",
         body: brand,
       }),

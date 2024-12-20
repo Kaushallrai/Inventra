@@ -14,41 +14,42 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAddCategoryMutation } from "@/redux/apiSlice";
+
 import { BaseModal } from ".";
 import { toast } from "sonner";
+import { useAddBrandMutation } from "@/redux/apiSlice";
 
 const formSchema = z.object({
-  categoryName: z.string().min(1, {
-    message: "Category name must be at least 1 character.",
+  brandName: z.string().min(1, {
+    message: "Brand name must be at least 1 character.",
   }),
 });
 
-interface AddCategoryModalProps {
+interface AddBrandModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function AddCategoryModal({ isOpen, onClose }: AddCategoryModalProps) {
-  const [addCategory, { isLoading }] = useAddCategoryMutation();
+export function AddBrandModal({ isOpen, onClose }: AddBrandModalProps) {
+  const [addBrand, { isLoading }] = useAddBrandMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryName: "",
+      brandName: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await addCategory({ name: values.categoryName.trim() }).unwrap();
+      await addBrand({ name: values.brandName.trim() }).unwrap();
       form.reset();
 
-      toast.success("Category added successfully");
+      toast.success("Brand added successfully");
       onClose();
     } catch (error) {
-      console.error("Failed to add category:", error);
-      toast.error("Failed to add category");
+      console.error("Failed to add brand:", error);
+      toast.error("Failed to add brand");
     }
   }
 
@@ -56,21 +57,21 @@ export function AddCategoryModal({ isOpen, onClose }: AddCategoryModalProps) {
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title="Add New Category"
-      description="Enter the name for the new category"
+      title="Add New Brand"
+      description="Enter the name for the new brand"
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
-            name="categoryName"
+            name="brandName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Category Name</FormLabel>
+                <FormLabel>Brand Name</FormLabel>
 
                 <FormControl>
                   <Input
-                    placeholder="Enter category name"
+                    placeholder="Enter brand name"
                     {...field}
                     autoComplete="off"
                   />
@@ -84,7 +85,7 @@ export function AddCategoryModal({ isOpen, onClose }: AddCategoryModalProps) {
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Adding..." : "Add Category"}
+              {isLoading ? "Adding..." : "Add Brand"}
             </Button>
           </div>
         </form>
