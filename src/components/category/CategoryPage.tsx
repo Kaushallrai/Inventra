@@ -1,5 +1,5 @@
 "use client";
-import { PlusSquare } from "lucide-react";
+import { Edit, PlusSquare } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { AddBrandModal } from "../modal/AddBrandModal";
 import { useState } from "react";
+import { EditBrandModal } from "../modal/EditBrandModal";
 
 interface Brand {
   id: number;
@@ -23,9 +24,13 @@ interface BrandPageProps {
 
 export default function BrandPage({ category }: BrandPageProps) {
   const [showAddBrandModal, setShowAddBrandModal] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleAddBrandClick = () => {
     setShowAddBrandModal(true);
+  };
+  const handleEditBrandClick = () => {
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -49,7 +54,7 @@ export default function BrandPage({ category }: BrandPageProps) {
             </div>
           </div>
         </div>
-        <div>
+        <div className="flex items-center gap-2">
           <Button
             className="bg-orange-600 hover:bg-orange-500 text-white"
             onClick={handleAddBrandClick}
@@ -57,11 +62,22 @@ export default function BrandPage({ category }: BrandPageProps) {
             <PlusSquare />
             Add Brand
           </Button>
+          <Button
+            className="bg-orange-600 hover:bg-orange-500 text-white"
+            onClick={handleEditBrandClick}
+          >
+            <Edit />
+            Edit Brand
+          </Button>
         </div>
       </div>
       <AddBrandModal
         isOpen={showAddBrandModal}
         onClose={() => setShowAddBrandModal(false)}
+      />
+      <EditBrandModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
       />
     </div>
   );
