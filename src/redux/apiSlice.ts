@@ -243,7 +243,7 @@ export const apiSlice = createApi({
     }),
     // Variant endpoints
     getVariants: builder.query<Variant[], void>({
-      query: () => "/variants",
+      query: () => "/variant",
       providesTags: ["Variant"],
     }),
     addVariant: builder.mutation<
@@ -251,7 +251,7 @@ export const apiSlice = createApi({
       Omit<Variant, "id" | "createdAt" | "updatedAt">
     >({
       query: (variant) => ({
-        url: "/variants",
+        url: "/variant",
         method: "POST",
         body: variant,
       }),
@@ -259,7 +259,7 @@ export const apiSlice = createApi({
     }),
     deleteVariant: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/variants/${id}`,
+        url: `/variant/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Variant"],
@@ -267,7 +267,7 @@ export const apiSlice = createApi({
     updateVariant: builder.mutation<Variant, Partial<Variant> & { id: number }>(
       {
         query: ({ id, ...variant }) => ({
-          url: `/variants/${id}`,
+          url: `/variant/${id}`,
           method: "PUT",
           body: variant,
         }),

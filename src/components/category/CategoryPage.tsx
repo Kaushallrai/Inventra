@@ -1,5 +1,7 @@
 "use client";
+
 import { Edit, PlusSquare } from "lucide-react";
+import { useState } from "react";
 
 import {
   Breadcrumb,
@@ -10,8 +12,11 @@ import {
 } from "../ui/breadcrumb";
 import { Button } from "../ui/button";
 import { AddBrandModal } from "../modal/AddBrandModal";
-import { useState } from "react";
 import { EditBrandModal } from "../modal/EditBrandModal";
+import { AddVariantModal } from "../modal/AddVariantModal";
+import { VariantDataTable } from "./data-table";
+import { columns } from "./columns";
+import { useGetVariantsQuery } from "@/redux/apiSlice";
 
 interface Brand {
   id: number;
@@ -23,61 +28,65 @@ interface BrandPageProps {
 }
 
 export default function BrandPage({ category }: BrandPageProps) {
-  const [showAddBrandModal, setShowAddBrandModal] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
+  const [isEditBrandModalOpen, setIsEditBrandModalOpen] = useState(false);
+  const [isAddVariantModalOpen, setIsAddVariantModalOpen] = useState(false);
 
-  const handleAddBrandClick = () => {
-    setShowAddBrandModal(true);
-  };
-  const handleEditBrandClick = () => {
-    setIsEditModalOpen(true);
-  };
+  const { data: variants = [] } = useGetVariantsQuery();
 
   return (
-    <div className="mt-4 ">
+    <div className="mt-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold ">{category.name}</h1>
-          <div className="flex h-12 shrink-0 items-center gap-2 ">
-            <div className="flex items-center gap-2 ">
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    Brand
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{category.name}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
+          <h1 className="text-2xl font-semibold">{category.name}</h1>
+          <div className="flex h-12 shrink-0 items-center gap-2">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  Brand
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{category.name}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Button
             className="bg-orange-600 hover:bg-orange-500 text-white"
-            onClick={handleAddBrandClick}
+            onClick={() => setIsAddBrandModalOpen(true)}
           >
             <PlusSquare />
             Add Brand
           </Button>
           <Button
             className="bg-orange-600 hover:bg-orange-500 text-white"
-            onClick={handleEditBrandClick}
+            onClick={() => setIsEditBrandModalOpen(true)}
           >
             <Edit />
             Edit Brand
           </Button>
         </div>
       </div>
+      <VariantDataTable
+        columns={columns}
+        data={variants}
+        onAddVariant={() => setIsAddVariantModalOpen(true)}
+      />
       <AddBrandModal
-        isOpen={showAddBrandModal}
-        onClose={() => setShowAddBrandModal(false)}
+        isOpen={isAddBrandModalOpen}
+        onClose={() => setIsAddBrandModalOpen(false)}
       />
       <EditBrandModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        isOpen={isEditBrandModalOpen}
+        onClose={() => setIsEditBrandModalOpen(false)}
+      />
+      <AddVariantModal
+        isOpen={isAddVariantModalOpen}
+        onClose={() => setIsAddVariantModalOpen(false)}
+        category={category}
       />
     </div>
   );

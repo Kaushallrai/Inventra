@@ -12,14 +12,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export type Item = {
-  id: string;
+export type Variant = {
+  id: number;
   name: string;
+  imageUrl: string | null;
+  brandId: number;
+  productId: number | null;
+  categoryId: number | null;
   price: number;
-  stock: number;
+  quantity: number;
+  status: string;
+  lastUpdated: string;
 };
 
-export const columns: ColumnDef<Item>[] = [
+export const columns: ColumnDef<Variant>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -36,7 +42,17 @@ export const columns: ColumnDef<Item>[] = [
   },
   {
     accessorKey: "price",
-    header: "Price",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Price
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
       const formatted = new Intl.NumberFormat("en-US", {
@@ -47,13 +63,45 @@ export const columns: ColumnDef<Item>[] = [
     },
   },
   {
-    accessorKey: "stock",
-    header: "Stock",
+    accessorKey: "quantity",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Quantity
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    accessorKey: "lastUpdated",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Last Updated
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("lastUpdated"));
+      return <div>{date.toLocaleString()}</div>;
+    },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const item = row.original;
+      const variant = row.original;
 
       return (
         <DropdownMenu>
@@ -66,13 +114,16 @@ export const columns: ColumnDef<Item>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(item.id)}
+              onClick={() =>
+                navigator.clipboard.writeText(variant.id.toString())
+              }
             >
-              Copy item ID
+              Copy variant ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit item</DropdownMenuItem>
-            <DropdownMenuItem>Delete item</DropdownMenuItem>
+            <DropdownMenuItem>View details</DropdownMenuItem>
+            <DropdownMenuItem>Edit variant</DropdownMenuItem>
+            <DropdownMenuItem>Delete variant</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

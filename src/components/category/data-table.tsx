@@ -36,15 +36,15 @@ import { ChevronLeft, ChevronRight, PlusSquare } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onAddUser: () => void;
-  onEditUser: () => void;
+  onAddVariant: () => void;
+  onEditVariant: (variant: TData) => void;
 }
 
-export function DataTable<TData, TValue>({
+export function VariantDataTable<TData, TValue>({
   columns,
   data,
-  onAddUser,
-  onEditUser,
+  onAddVariant,
+  onEditVariant,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
     meta: {
-      onEditUser,
+      onEditVariant,
     },
   });
 
@@ -84,7 +84,7 @@ export function DataTable<TData, TValue>({
     <div className="space-y-4 py-4 rounded-lg">
       <div className="flex items-center justify-between">
         <Input
-          placeholder="Filter names..."
+          placeholder="Filter variants..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -94,10 +94,10 @@ export function DataTable<TData, TValue>({
         <div className="flex gap-2 ">
           <Button
             className="bg-orange-600 hover:bg-orange-500 text-white"
-            onClick={onAddUser}
+            onClick={onAddVariant}
           >
             <PlusSquare className="mr-2 h-4 w-4" />
-            Add User
+            Add Variant
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -132,7 +132,7 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className=" text-gray-400 py-1">
+                  <TableHead key={header.id} className="text-gray-400 py-1">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -163,7 +163,7 @@ export function DataTable<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24  text-center text-gray-500"
+                  className="h-24 text-center text-gray-500"
                 >
                   No results.
                 </TableCell>
