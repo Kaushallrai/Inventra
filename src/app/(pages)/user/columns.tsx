@@ -86,7 +86,7 @@ export const columns: ColumnDef<User>[] = [
     header: "Email",
     cell: ({ row }) => {
       const email = row.getValue("email");
-      return <span className="text-blue-600">{email}</span>;
+      return <span className="text-orange-600">{email}</span>;
     },
   },
   {

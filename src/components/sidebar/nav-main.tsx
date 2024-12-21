@@ -42,8 +42,8 @@ export function NavMain({
       <SidebarMenu>
         {items.map((item) => {
           const baseItemClasses =
-            "flex items-center w-full px-3 py-2 gap-3 hover:bg-gray-100 rounded";
-          const activeClasses = "text-blue-600 font-bold bg-gray-200";
+            "flex items-center w-full px-3 py-2 gap-3 hover:bg-gray-100 rounded hover:text-orange-600";
+          const activeClasses = "text-orange-600 font-bold bg-gray-200";
 
           if (item.isSimple) {
             return (

@@ -93,7 +93,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="flex gap-2 ">
           <Button
-            className="bg-blue-600 hover:bg-blue-500 text-white"
+            className="bg-orange-600 hover:bg-orange-500 text-white"
             onClick={onAddUser}
           >
             <PlusSquare className="mr-2 h-4 w-4" />

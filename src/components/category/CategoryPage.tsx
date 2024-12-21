@@ -51,7 +51,7 @@ export default function BrandPage({ category }: BrandPageProps) {
         </div>
         <div>
           <Button
-            className="bg-blue-600 hover:bg-blue-500 text-white"
+            className="bg-orange-600 hover:bg-orange-500 text-white"
             onClick={handleAddBrandClick}
           >
             <PlusSquare />
