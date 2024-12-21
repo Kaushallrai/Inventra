@@ -1,4 +1,6 @@
+"use client";
 import { PlusSquare } from "lucide-react";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
