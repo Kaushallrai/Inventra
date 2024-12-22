@@ -23,11 +23,11 @@ interface Brand {
   name: string;
 }
 
-interface BrandPageProps {
-  category: Brand;
+interface CategoryPageProps {
+  category: Category;
 }
 
-export default function BrandPage({ category }: BrandPageProps) {
+export default function BrandPage({ category }: CategoryPageProps) {
   const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
   const [isEditBrandModalOpen, setIsEditBrandModalOpen] = useState(false);
   const [isAddVariantModalOpen, setIsAddVariantModalOpen] = useState(false);

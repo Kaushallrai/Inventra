@@ -11,21 +11,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
 
 export type Variant = {
   id: number;
   name: string;
   imageUrl: string | null;
+  brand: string;
   brandId: number;
   productId: number | null;
   categoryId: number | null;
   price: number;
   quantity: number;
   status: string;
-  lastUpdated: string;
 };
 
 export const columns: ColumnDef<Variant>[] = [
+  {
+    accessorKey: "imageUrl",
+    header: "Image",
+    cell: ({ row }) => {
+      const imageUrl = row.getValue("imageUrl");
+      return imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt="Product Image"
+          width={100}
+          height={100}
+          className=" object-cover rounded"
+        />
+      ) : (
+        <div className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center">
+          N/A
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -38,6 +59,14 @@ export const columns: ColumnDef<Variant>[] = [
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
+    },
+  },
+  {
+    accessorKey: "brand",
+    header: "Brand",
+    cell: ({ row }) => {
+      const brand = row.getValue("brand");
+      return <div className="font-medium">{brand?.name || "Unknown"}</div>;
     },
   },
   {
@@ -79,30 +108,28 @@ export const columns: ColumnDef<Variant>[] = [
   {
     accessorKey: "status",
     header: "Status",
-  },
-  {
-    accessorKey: "lastUpdated",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Last Updated
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
     cell: ({ row }) => {
-      const date = new Date(row.getValue("lastUpdated"));
-      return <div>{date.toLocaleString()}</div>;
+      const status = row.getValue("status");
+      return (
+        <span
+          className={`px-3 py-1 text-xs font-medium rounded-md border ${
+            status === "In Stock"
+              ? "bg-green-100 text-green-700 border-green-300"
+              : status === "Out of Stock"
+              ? "bg-red-100 text-red-700 border-red-300"
+              : status === "Low Stock"
+              ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+              : "bg-gray-100 text-gray-700 border-gray-300"
+          }`}
+        >
+          {status}
+        </span>
+      );
     },
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const variant = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -113,15 +140,7 @@ export const columns: ColumnDef<Variant>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(variant.id.toString())
-              }
-            >
-              Copy variant ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View details</DropdownMenuItem>
             <DropdownMenuItem>Edit variant</DropdownMenuItem>
             <DropdownMenuItem>Delete variant</DropdownMenuItem>
           </DropdownMenuContent>

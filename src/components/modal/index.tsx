@@ -15,6 +15,7 @@ interface BaseModalProps {
   title?: string;
   description?: string;
   children: React.ReactNode;
+  preventAriaHidden?: boolean;
 }
 
 export function BaseModal({
@@ -23,6 +24,7 @@ export function BaseModal({
   title,
   description,
   children,
+  preventAriaHidden,
 }: BaseModalProps) {
   const [open, setOpen] = useState(isOpen);
 
@@ -37,7 +39,7 @@ export function BaseModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent>
+      <DialogContent aria-hidden={preventAriaHidden ? undefined : "true"}>
         {title && (
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>

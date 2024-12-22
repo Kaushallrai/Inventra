@@ -132,7 +132,10 @@ export function VariantDataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-gray-400 py-1">
+                  <TableHead
+                    key={header.id}
+                    className="text-gray-400 py-1 text-center"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -150,10 +153,9 @@ export function VariantDataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className=""
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
+                    <TableCell key={cell.id} className="py-3 text-center">
                       {renderCell(cell)}
                     </TableCell>
                   ))}
