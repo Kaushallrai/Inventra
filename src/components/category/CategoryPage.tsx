@@ -13,10 +13,10 @@ import {
 import { Button } from "../ui/button";
 import { AddBrandModal } from "../modal/AddBrandModal";
 import { EditBrandModal } from "../modal/EditBrandModal";
-import { AddVariantModal } from "../modal/AddVariantModal";
 import { VariantDataTable } from "./data-table";
 import { columns } from "./columns";
 import { useGetVariantsQuery } from "@/redux/apiSlice";
+import { AddVariantModal } from "../modal/AddVariantModal";
 
 interface Brand {
   id: number;
