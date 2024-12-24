@@ -264,16 +264,17 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Variant"],
     }),
-    updateVariant: builder.mutation<Variant, Partial<Variant> & { id: number }>(
-      {
-        query: ({ id, ...variant }) => ({
-          url: `/variant/${id}`,
-          method: "PUT",
-          body: variant,
-        }),
-        invalidatesTags: ["Variant"],
-      }
-    ),
+    updateVariant: builder.mutation<
+      Variant,
+      Partial<Variant> & { id: number; formData: FormData }
+    >({
+      query: ({ id, formData }) => ({
+        url: `/variant/${id}`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["Variant"],
+    }),
     // Supplier endpoints
     getSuppliers: builder.query<Supplier[], void>({
       query: () => "/suppliers",
