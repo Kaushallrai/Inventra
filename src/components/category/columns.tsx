@@ -111,19 +111,7 @@ export const columns: ColumnDef<Variant>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status");
       return (
-        <span
-          className={`px-3 py-1 text-xs font-medium rounded-md border ${
-            status === "In Stock"
-              ? "bg-green-100 text-green-700 border-green-300"
-              : status === "Out of Stock"
-              ? "bg-red-100 text-red-700 border-red-300"
-              : status === "Low Stock"
-              ? "bg-yellow-100 text-yellow-700 border-yellow-300"
-              : "bg-gray-100 text-gray-700 border-gray-300"
-          }`}
-        >
-          {status}
-        </span>
+      
       );
     },
   },
