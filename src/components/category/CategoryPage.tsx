@@ -31,6 +31,11 @@ export default function BrandPage({ category }: CategoryPageProps) {
   const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
   const [isEditBrandModalOpen, setIsEditBrandModalOpen] = useState(false);
   const [isAddVariantModalOpen, setIsAddVariantModalOpen] = useState(false);
+  const [isEditVariantModalOpen, setIsEditVariantModalOpen] = useState(false);
+
+  const handleEditVariant = (variant) => {
+    setIsEditVariantModalOpen(true);
+  };
 
   const { data: variants = [] } = useGetVariantsQuery();
 
@@ -74,6 +79,7 @@ export default function BrandPage({ category }: CategoryPageProps) {
         columns={columns}
         data={variants}
         onAddVariant={() => setIsAddVariantModalOpen(true)}
+        onEditVariant={handleEditVariant}
       />
       <AddBrandModal
         isOpen={isAddBrandModalOpen}
