@@ -18,11 +18,6 @@ import { columns } from "./columns";
 import { useGetVariantsQuery } from "@/redux/apiSlice";
 import { AddVariantModal } from "../modal/AddVariantModal";
 
-interface Brand {
-  id: number;
-  name: string;
-}
-
 interface CategoryPageProps {
   category: Category;
 }

@@ -1,8 +1,22 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useDeleteVariantMutation } from "@/redux/apiSlice";
+import Image from "next/image";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +25,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Image from "next/image";
 
 export type Variant = {
   id: number;
   name: string;
   imageUrl: string | null;
-  brand: string;
+  brand: { name: string };
   brandId: number;
   productId: number | null;
   categoryId: number | null;
@@ -28,17 +41,39 @@ export type Variant = {
 
 export const columns: ColumnDef<Variant>[] = [
   {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "imageUrl",
     header: "Image",
     cell: ({ row }) => {
-      const imageUrl = row.getValue("imageUrl");
+      const imageUrl = row.getValue("imageUrl") as string | null;
       return imageUrl ? (
         <Image
           src={imageUrl}
           alt="Product Image"
           width={100}
           height={100}
-          className=" object-cover rounded"
+          className="object-cover rounded"
         />
       ) : (
         <div className="h-10 w-10 bg-gray-200 rounded flex items-center justify-center">
@@ -60,12 +95,16 @@ export const columns: ColumnDef<Variant>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const name = row.getValue("name");
+      return <div className="ml-4">{name}</div>;
+    },
   },
   {
     accessorKey: "brand",
     header: "Brand",
     cell: ({ row }) => {
-      const brand = row.getValue("brand");
+      const brand = row.getValue("brand") as { name: string };
       return <div className="font-medium">{brand?.name || "Unknown"}</div>;
     },
   },
@@ -104,24 +143,25 @@ export const columns: ColumnDef<Variant>[] = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const quantity = row.getValue("quantity");
+      return <div className="ml-4">{quantity}</div>;
+    },
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
       const status = row.getValue("status");
+      const statusClasses =
+        status === "In Stock"
+          ? "bg-green-100 text-green-800 border border-green-300"
+          : status === "Out of Stock"
+          ? "bg-red-100 text-red-800 border border-red-300"
+          : "bg-yellow-100 text-yellow-800 border border-yellow-300";
+
       return (
-        <span
-          className={`px-3 py-1 text-xs font-medium rounded-md border ${
-            status === "In Stock"
-              ? "bg-green-100 text-green-700 border-green-300"
-              : status === "Out of Stock"
-              ? "bg-red-100 text-red-700 border-red-300"
-              : status === "Low Stock"
-              ? "bg-yellow-100 text-yellow-700 border-yellow-300"
-              : "bg-gray-100 text-gray-700 border-gray-300"
-          }`}
-        >
+        <span className={`py-1 px-2 rounded-md font-medium ${statusClasses}`}>
           {status}
         </span>
       );
@@ -129,22 +169,47 @@ export const columns: ColumnDef<Variant>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    header: "Actions",
+
+    cell: ({ row, table }) => {
+      const [deleteVariant] = useDeleteVariantMutation();
+      const handleDelete = async () => {
+        await deleteVariant(row.original.id);
+      };
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit variant</DropdownMenuItem>
-            <DropdownMenuItem>Delete variant</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.options.meta?.onEditVariant(row.original)}
+          >
+            <Edit className="h-4 w-4 mr-1" />
+            Edit
+          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="h-4 w-4 mr-1" />
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  variant for {row.original.name}.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       );
     },
   },
